@@ -1,0 +1,1900 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GenerAzioni SIMM · Health Lab | Pianificatore Territoriale e Piattaforma</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root {
+  --ink:#29172a;
+  --muted:#786b74;
+  --bg:#fcf8f8;
+  --line:#eedfe5;
+  --accent:#b90d49;
+  --soft:#fdebf1;
+  --brand:#b90d49;
+  --brand-dark:#850032;
+  --brand-orange:#f0a527;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  background:radial-gradient(circle at 92% 3%,#fff0f2 0,transparent 30%),var(--bg);
+  color:var(--ink);
+  font:15px/1.65 'DM Sans',system-ui,sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; transition:all .2s; }
+h1,h2,h3,.brand { font-family:Manrope,system-ui,sans-serif; }
+h1 { font-size:clamp(36px,5.2vw,68px); line-height:1.08; letter-spacing:-.06em; margin:0 0 18px; }
+h2 { font-size:clamp(24px,2.6vw,35px); letter-spacing:-.045em; line-height:1.2; margin:0 0 10px; }
+h3 { font-size:17px; letter-spacing:-.025em; margin:0 0 8px; }
+p { color:var(--muted); margin-top:0; }
+.shell { max-width:1320px; margin:auto; padding:0 32px; }
+
+/* Header SIMM */
+header {
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  border-top:5px solid var(--brand);
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 2px 18px #8000320d;
+}
+.top { display:flex; align-items:center; justify-content:space-between; min-height:82px; padding:10px 0; gap:16px; }
+.brand { display:flex; align-items:center; gap:16px; }
+.brand-logo { height:56px; width:auto; display:block; flex:0 0 auto; }
+.brand-text { display:flex; flex-direction:column; gap:2px; }
+.brand-kicker { font-size:10px; letter-spacing:.17em; text-transform:uppercase; color:#8d6774; font-weight:800; }
+.brand-title { font:800 26px/1 Manrope,sans-serif; letter-spacing:-.05em; color:#a61746; }
+.brand-title span { color:#231720; font-size:20px; }
+.brand-subline { font-size:12px; color:#816773; font-weight:700; }
+.top-right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.pill { border:1px solid #edcfdb; border-radius:50px; padding:8px 14px; background:#fff7fa; font-size:12px; font-weight:800; color:#8b4761; }
+.btn { border:0; background:var(--brand); color:white; padding:11px 17px; border-radius:11px; font-weight:800; font-size:13.5px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+.btn.secondary { background:#fff; color:var(--brand); border:1px solid #e7cbd6; }
+.btn.small { padding:6px 11px; font-size:12px; border-radius:8px; }
+.btn:hover { filter:brightness(.93); transform:translateY(-1px); }
+
+/* Hero */
+.hero { padding:56px 0 46px; display:grid; grid-template-columns:1.18fr .82fr; gap:40px; align-items:center; }
+.eyebrow { display:flex; align-items:center; gap:9px; color:var(--brand); font-weight:800; font-size:12px; letter-spacing:.14em; margin-bottom:16px; }
+.dot { width:8px; height:8px; background:var(--brand-orange); border-radius:100%; }
+.hero p { font-size:16.5px; max-width:650px; }
+.hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:26px; }
+.hero-viz {
+  background:linear-gradient(180deg,#fff 0%,#fff8fb 100%);
+  border:1px solid #efd4de;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:0 22px 50px #6b12331a;
+}
+.hero-logo-card {
+  background:#fff;
+  border:1px solid #f0d5df;
+  border-radius:16px;
+  padding:12px 16px;
+  display:inline-flex;
+  align-items:center;
+  box-shadow:0 10px 22px #7d163114;
+}
+.hero-logo-card img { width:195px; max-width:100%; height:auto; display:block; }
+.hero-big { font:800 26px/1.15 Manrope,sans-serif; margin:14px 0 12px; letter-spacing:-.04em; color:var(--ink); }
+.hero-rail { display:flex; justify-content:space-between; align-items:center; padding:11px 14px; background:#fff; border:1px solid #efd4de; border-radius:12px; margin-bottom:8px; }
+.hero-rail span { font-size:11px; text-transform:uppercase; letter-spacing:.11em; color:#8d6473; font-weight:800; }
+.hero-rail b { font-size:13.5px; color:#521c2f; }
+
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:48px; }
+.stat { background:white; border:1px solid var(--line); border-top:3px solid var(--brand); border-radius:18px; padding:20px 22px; }
+.stat strong { font:800 29px Manrope; color:#a80040; }
+.stat p { margin:4px 0 0; font-size:13px; font-weight:600; }
+
+.section-top { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:18px; }
+.project-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.project-card {
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:24px;
+  min-height:290px;
+  transition:all .2s;
+}
+.project-card:hover { transform:translateY(-4px); border-color:var(--brand); box-shadow:0 14px 28px #b90d4916; }
+.project-card.active-card { border:2px solid var(--accent); background:#fffcfd; }
+.project-card .big-symbol { font-size:36px; background:var(--soft); width:62px; height:62px; display:grid; place-items:center; border-radius:18px; color:var(--accent); margin-bottom:6px; }
+.project-card strong { font:800 22px Manrope; letter-spacing:-.03em; color:var(--ink); }
+.project-card p { font-size:13px; line-height:1.5; flex-grow:1; }
+.project-card .open { font-size:13px; font-weight:800; color:var(--accent); margin-top:auto; }
+
+/* Workspace */
+.workspace { margin-top:58px; scroll-margin-top:92px; }
+.project-heading {
+  padding:28px 34px;
+  background:linear-gradient(105deg,#850032,#b90d49);
+  color:white;
+  border-radius:24px 24px 0 0;
+  border-bottom:5px solid var(--brand-orange);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.project-heading h2 { margin:5px 0 4px; color:white; font-size:31px; }
+.project-heading p { color:#ffe1e8; margin:0; font-weight:500; }
+.heading-symbol { font-size:50px; color:#fff9; }
+.nav-tabs {
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:13px 16px;
+  background:white;
+  border:1px solid var(--line);
+  border-top:0;
+  position:sticky;
+  top:82px;
+  z-index:10;
+  scrollbar-width:thin;
+}
+.tab {
+  white-space:nowrap;
+  border:0;
+  padding:10px 16px;
+  border-radius:10px;
+  background:transparent;
+  color:#77616b;
+  font-size:13px;
+  font-weight:800;
+}
+.tab:hover { background:#fff5f8; color:var(--brand); }
+.tab.active { background:var(--soft); color:var(--accent); box-shadow:inset 0 0 0 1px #f1c6d6; }
+.workspace-body { background:#fff; border:1px solid var(--line); border-top:0; border-radius:0 0 24px 24px; padding:32px; min-height:520px; }
+.section-label { font-size:11px; font-weight:800; letter-spacing:.12em; color:var(--brand); text-transform:uppercase; margin-bottom:10px; display:block; }
+
+/* Grids & Cards */
+.two { display:grid; grid-template-columns:1.08fr .92fr; gap:24px; }
+.three { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.four { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.inner { background:#fffafc; border:1px solid var(--line); padding:20px; border-radius:16px; }
+.inner h3 { color:var(--ink); margin-bottom:10px; font-size:16px; }
+.inner p { font-size:13.5px; margin-bottom:0; }
+.note { background:#fff8e8; border-left:4px solid var(--brand-orange); padding:15px 18px; border-radius:10px; color:#775a2e; font-size:13px; margin:18px 0; }
+.data-row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
+.data-row:last-child { border:0; }
+.data-row b { white-space:nowrap; color:var(--accent); }
+.objectives { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.objective { padding:20px; background:var(--soft); border-radius:16px; border:1px solid #f3d2df; }
+.objective h3 { color:var(--accent); }
+.objective p { font-size:13px; margin:0; }
+.list-clean { padding-left:18px; color:var(--muted); margin:0; }
+.list-clean li { margin:6px 0; font-size:13.5px; }
+.badge { display:inline-flex; background:#fff0d6; color:#8b5615; border-radius:40px; padding:5px 12px; font-size:11px; font-weight:800; }
+
+/* Tables & Editable Inputs */
+.table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; background:white; margin:16px 0; }
+table { border-collapse:collapse; width:100%; font-size:13px; text-align:left; }
+th { background:#fff0f4; color:#a61746; font-size:11px; text-transform:uppercase; letter-spacing:.05em; padding:13px 14px; }
+td { padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
+tr:last-child td { border-bottom:0; }
+.edit-input { border:1px solid #ead4dc; background:#fff; width:100%; font:inherit; padding:7px 10px; border-radius:8px; color:var(--ink); transition:all 0.2s; }
+.edit-input:focus { border-color:var(--brand); outline:none; box-shadow:0 0 0 3px var(--soft); }
+.gantt-input { border:1px solid transparent; background:transparent; width:100%; font:inherit; padding:6px 8px; border-radius:6px; color:var(--ink); }
+.gantt-input:hover, .gantt-input:focus { border:1px solid #e7cbd6; background:#fff; outline:none; }
+.gantt-num { border:1px solid #e7cbd6; background:#fff; border-radius:6px; width:50px; padding:4px; font:inherit; text-align:center; color:var(--ink); }
+.gantt-num:focus { outline:none; border-color:var(--brand); }
+
+/* SVG Charts */
+.chart-container { width:100%; margin:16px 0; background:white; border:1px solid var(--line); border-radius:16px; padding:20px; }
+.dumbbell-line { stroke:#e8cfd9; stroke-width:4.5; stroke-linecap:round; }
+.dumbbell-base { fill:#9a858f; }
+.dumbbell-target { fill:var(--accent); }
+.dumbbell-text { font-size:12px; font-family:'DM Sans',sans-serif; fill:var(--ink); font-weight:700; }
+.dumbbell-val { font-size:11px; font-family:'DM Sans',sans-serif; font-weight:800; }
+.radar-grid { fill:none; stroke:#eedfe5; stroke-width:1; stroke-dasharray:3 3; }
+.radar-axis { stroke:#eedfe5; stroke-width:1.4; }
+.radar-poly-base { fill:none; stroke:#9a858f; stroke-width:2; stroke-dasharray:4 4; }
+.radar-poly-active { fill:var(--accent); fill-opacity:0.18; stroke:var(--accent); stroke-width:2.5; }
+.radar-label { font-size:10px; font-family:'DM Sans',sans-serif; font-weight:800; fill:var(--ink); text-transform:uppercase; letter-spacing:.04em; }
+.funnel-bar { fill:#f7e5ed; transition:width 0.35s ease; rx:6; }
+.funnel-bar-active { fill:var(--accent); transition:width 0.35s ease; rx:6; }
+.funnel-poly { fill:var(--accent); fill-opacity:0.08; }
+.funnel-label { font-size:12px; font-family:'DM Sans',sans-serif; font-weight:700; fill:var(--ink); }
+.funnel-val { font-size:13px; font-family:'Manrope',sans-serif; font-weight:800; fill:var(--ink); }
+.funnel-drop { font-size:11px; font-weight:800; fill:#b90d49; }
+
+/* Gantt */
+.gantt-v5 { display:flex; flex-direction:column; gap:12px; }
+.gantt-row { display:grid; grid-template-columns:200px 1fr; gap:16px; align-items:center; }
+.gantt-label { font-size:12.5px; font-weight:700; line-height:1.3; }
+.gantt-track { background:#f5ebef; height:22px; border-radius:11px; position:relative; overflow:hidden; }
+.gantt-bar { position:absolute; height:100%; background:linear-gradient(90deg,var(--brand-dark),var(--accent)); border-radius:11px; transition:all 0.35s ease; }
+.gantt-months { display:grid; gap:16px; margin-bottom:6px; font-size:10px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; text-align:center; }
+
+/* Budget Stack (SIMM Palette) */
+.budget-stack-wrap { margin-top:12px; }
+.budget-stack { display:flex; height:32px; border-radius:14px; overflow:hidden; border:1px solid var(--line); }
+.budget-stack > div { display:flex; align-items:center; justify-content:center; color:white; font-size:11px; font-weight:800; transition:width 0.35s ease; overflow:hidden; white-space:nowrap; }
+.stack-fixed { background:#5c1630; }
+.stack-fte { background:#b90d49; }
+.stack-geo { background:#e68a1e; }
+.stack-var { background:#d94e67; }
+.budget-legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:11.5px; font-weight:700; color:var(--ink); }
+.budget-legend span { display:inline-flex; align-items:center; gap:6px; }
+.budget-legend i { display:inline-block; width:10px; height:10px; border-radius:3px; }
+
+/* Simulator & Atlas */
+.sim-layout { display:grid; grid-template-columns:minmax(330px,.95fr) minmax(0,1.25fr); gap:24px; margin-top:16px; align-items:start; }
+.sim-controls { display:grid; gap:12px; }
+.sim-group { font-size:11px; letter-spacing:.1em; color:var(--brand); text-transform:uppercase; font-weight:800; margin:8px 0 0; }
+.sim-control { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+.sim-control .topline { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px; }
+.sim-control label { font-size:13px; font-weight:800; }
+.sim-control strong { font-weight:800; color:var(--accent); font-size:14px; white-space:nowrap; }
+.sim-control input[type=range] { width:100%; accent-color:var(--accent); }
+.sim-switch { display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; }
+.sim-switch input { width:20px; height:20px; accent-color:var(--accent); flex-shrink:0; cursor:pointer; }
+.sim-small { font-size:11.5px; color:var(--muted); line-height:1.4; margin-top:5px; }
+.sim-results { background:#fff; border:1px solid var(--line); border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:18px; }
+.sim-kpis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.sim-kpi { padding:14px; border:1px solid var(--line); border-radius:14px; background:#fffafc; }
+.sim-kpi small { display:block; color:var(--muted); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:.08em; }
+.sim-kpi b { font:800 22px/1.15 Manrope,sans-serif; color:var(--ink); display:block; margin-top:4px; }
+.sim-kpi span { font-size:11px; color:var(--muted); }
+.sim-banner { padding:13px 16px; background:#fff3f7; border:1px solid #ecd7e0; border-radius:12px; font-size:12.5px; color:#69233b; }
+.sim-notice { border-left:4px solid var(--brand-orange); background:#fff9ee; padding:12px 15px; border-radius:8px; font-size:12.5px; color:#694c24; }
+.territory-svg { width:100%; height:290px; background:#fffbfb; border:1px solid var(--line); border-radius:14px; margin:10px 0; display:block; }
+.node circle { transition:all 0.25s; stroke-width:3; cursor:pointer; }
+.node.selected circle { fill:var(--accent); stroke:#fff; }
+.node.unselected circle { fill:#d1bcc4; stroke:#fff; }
+.node.focused circle { stroke:var(--brand-orange); stroke-width:4; }
+.node text { font-size:11px; font-family:'DM Sans',sans-serif; font-weight:700; fill:#521c2f; pointer-events:none; }
+.preset-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.preset-btn { border:1px solid #e7cad5; background:#fff; border-radius:8px; padding:5px 10px; color:#7c2c48; font-size:11px; font-weight:800; }
+.preset-btn:hover { background:#fff3f7; border-color:var(--brand); }
+
+/* Piattaforma (Ecosystem Network SVG + Builder) */
+.platform-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
+.platform-kpi { background:#fffafc; border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+.platform-kpi small { display:block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
+.platform-kpi b { display:block; font:800 24px/1.15 Manrope,sans-serif; color:var(--brand); margin-top:4px; }
+.platform-kpi span { font-size:11.5px; color:var(--muted); }
+
+.platform-stage {
+  background:radial-gradient(circle at 50% 50%, #fff 0%, #fff7fa 100%);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  position:relative;
+  margin-top:12px;
+}
+.platform-inspector {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:10px 14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  font-size:12.5px;
+  margin-bottom:10px;
+  min-height:44px;
+}
+.platform-svg { width:100%; height:540px; display:block; }
+.plat-node { cursor:pointer; transition:opacity .25s; }
+.plat-node.dimmed { opacity:0.22; }
+.plat-edge { fill:none; transition:opacity .25s, stroke-width .25s; }
+.plat-edge.dimmed { opacity:0.1; }
+.plat-edge.produce { stroke:#b90d49; stroke-width:2.2; stroke-opacity:0.78; }
+.plat-edge.consume { stroke:#e08519; stroke-width:2.2; stroke-opacity:0.85; stroke-dasharray:5 3; }
+.plat-edge.highlighted { stroke-width:3.4; stroke-opacity:1; }
+.plat-circle { fill:#fdebf1; stroke:#b90d49; stroke-width:2.5; transition:all .2s; }
+.plat-circle.prosumer { fill:#fff0f5; stroke:#850032; stroke-width:3.2; }
+.plat-node:hover .plat-circle { fill:#b90d49; }
+.plat-node:hover .plat-circle + text, .plat-node:hover .plat-actor-lbl { fill:#fff !important; }
+.plat-hex { fill:#fff3dc; stroke:#f0a527; stroke-width:2.5; transition:all .2s; }
+.plat-hex.orphan { fill:#fff0f0; stroke:#d93838; stroke-dasharray:4 2; }
+.plat-node:hover .plat-hex { fill:#f0a527; }
+.plat-lbl { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:800; fill:#29172a; text-anchor:middle; pointer-events:none; }
+.plat-sub { font-family:'DM Sans',sans-serif; font-size:9px; font-weight:800; fill:#8d6473; text-anchor:middle; text-transform:uppercase; letter-spacing:.06em; pointer-events:none; }
+
+.platform-builder { display:grid; grid-template-columns:1fr 1.65fr; gap:22px; margin-top:22px; align-items:start; }
+.res-pill-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+.res-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 11px;
+  background:#fff3dc;
+  border:1px solid #f0a527;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:800;
+  color:#6e470b;
+}
+.res-pill button { border:0; background:transparent; color:#850032; font-weight:900; padding:0 2px; font-size:14px; line-height:1; }
+.actor-card {
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:15px 16px;
+  background:#fffafc;
+  margin-bottom:12px;
+}
+.actor-card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
+.role-badge { padding:4px 10px; border-radius:999px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+.role-prosumer { background:#fdebf1; color:#850032; border:1px solid #e6b4c7; }
+.role-producer { background:#fff3dc; color:#8a5308; border:1px solid #f0c987; }
+.role-consumer { background:#f3eef1; color:#5e4955; border:1px solid #d9ccd3; }
+.toggle-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.t-chip {
+  border:1px solid #e3cfd7;
+  background:#fff;
+  color:#6e5b64;
+  border-radius:999px;
+  padding:4px 10px;
+  font-size:11.5px;
+  font-weight:700;
+}
+.t-chip.on-prod { background:#b90d49; color:#fff; border-color:#b90d49; }
+.t-chip.on-cons { background:#f0a527; color:#29172a; border-color:#d98e14; }
+
+/* Campaign & Sources */
+.campaign-poster { background:linear-gradient(142deg,#850032,#b90d49 70%,#d96b27); color:white; min-height:300px; border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; }
+.campaign-poster h2 { font-size:34px; color:white; }
+.campaign-poster p { color:#fff; font-size:15.5px; }
+.audience { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+.audience button { padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff; text-align:left; font-weight:800; font-size:13px; }
+.audience button.sel { border-color:var(--accent); background:var(--soft); color:var(--accent); }
+.message-box { padding:20px; background:var(--soft); border-radius:14px; margin:12px 0; font-size:19px; font-weight:700; color:var(--ink); }
+.source-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
+.source-card { border:1px solid var(--line); border-radius:16px; padding:18px; background:white; }
+.source-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.source-actions a { border:1px solid #eecbd8; border-radius:9px; padding:7px 11px; color:#98143e; text-decoration:none; font-size:12px; font-weight:800; background:#fff5f8; }
+
+.footer { margin-top:70px; background:#7c002e; padding:42px 0; color:#fff; }
+.footer p { color:#f8dce8; margin:6px 0 0; }
+
+@media(max-width:980px){
+  .hero, .two, .sim-layout, .platform-builder { grid-template-columns:1fr; }
+  .stats, .project-grid, .three, .objectives, .platform-kpis, .sim-kpis { grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); }
+  .gantt-row { grid-template-columns:1fr; gap:6px; }
+  .gantt-months { display:none!important; }
+}
+@media(max-width:640px){
+  .shell { padding:0 16px; }
+  .brand-logo { height:42px; }
+  .brand-kicker, .brand-subline { display:none; }
+  .source-grid, .audience { grid-template-columns:1fr; }
+}
+@media print {
+  header, .nav-tabs, .sim-controls, .footer, .btn, .hero-actions { display:none!important; }
+  body { background:white; }
+  .workspace { margin:0; }
+  .workspace-body { border:0; padding:0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="shell top">
+  <div class="brand">
+    <img class="brand-logo" src="data:image/png;base64,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" alt="Logo SIMM">
+    <div class="brand-text">
+      <div class="brand-kicker">Società italiana di leadership e management in medicina</div>
+      <div class="brand-title">GenerAzioni <span>Health Lab</span></div>
+      <div class="brand-subline">Workshop · project work · pianificatore territoriale e piattaforma</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <span class="pill">LABORATORI SIMM · BERTINORO</span>
+    <button class="btn secondary" onclick="window.print()">⎙ Stampa Report</button>
+  </div>
+</div>
+</header>
+
+<main>
+<div class="shell" id="landing">
+  <section class="hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> DAL PROFILO DI SALUTE ALLA PIATTAFORMA DI COMUNITÀ</div>
+      <h1>Tre territori.<br>Tre sfide.<br><span style="color:#b90d49">Una salute di comunità operativa.</span></h1>
+      <p>Proposte progettuali sviluppate per il workshop SIMM con fonti tracciabili, atlanti territoriali interattivi, simulatore di scenari e modellazione dell'ecosistema a piattaforma con flussi animati di produzione e consumo.</p>
+      <div class="hero-actions">
+        <button class="btn" onclick="document.getElementById('cases').scrollIntoView({behavior:'smooth'})">Esplora i progetti ↗</button>
+        <button class="btn secondary" onclick="openProject(0, 'piattaforma')">Apri la Piattaforma ⬡</button>
+        <button class="btn secondary" onclick="openProject(0, 'simulatore')">Apri il Simulatore ↗</button>
+      </div>
+    </div>
+    <div class="hero-viz">
+      <div class="hero-logo-card">
+        <img src="data:image/png;base64,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" alt="SIMM">
+      </div>
+      <div class="hero-big">Territorio → Simulazione → Piattaforma</div>
+      <div class="hero-rail"><span>Atlante</span><b>Comuni selezionabili in tempo reale</b></div>
+      <div class="hero-rail"><span>Piattaforma</span><b>Cerchi (attori) & Esagoni (risorse)</b></div>
+      <div class="hero-rail"><span>Piano & Gantt</span><b>Cronoprogramma editabile</b></div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><strong>03</strong><p>Proposte territoriali complete</p></div>
+    <div class="stat"><strong>18</strong><p>Mesi di implementazione pilota</p></div>
+    <div class="stat"><strong>06</strong><p>Moduli integrati per project work</p></div>
+  </div>
+
+  <section id="cases">
+    <div class="section-top">
+      <div>
+        <span class="section-label">SCEGLI UN PROJECT WORK</span>
+        <h2>Dalle evidenze alle soluzioni</h2>
+      </div>
+      <p>Seleziona un caso studio per aprire l'area di lavoro completa con tutti e sei i moduli operativi.</p>
+    </div>
+    <div class="project-grid" id="projectCards"></div>
+  </section>
+</div>
+
+<section class="workspace shell" id="workspace">
+  <div class="project-heading" id="projectHeading"></div>
+  <nav class="nav-tabs" id="tabs" aria-label="Sezioni del progetto"></nav>
+  <div class="workspace-body" id="body" aria-live="polite"></div>
+</section>
+</main>
+
+<footer class="footer">
+<div class="shell">
+  <div class="brand" style="color:white; font-size:18px;">✳ generazioni · health lab · simm</div>
+  <p>Prototipo didattico ispirato all’identità visiva SIMM · Project work 1 Appennino Bolognese, 2 Distretto H4, 3 Distretto 40 Corleone · Elaborazione progettuale didattica non validata clinicamente.</p>
+</div>
+</footer>
+
+<script>
+// --- DATI COMPLETI DEI 3 PROJECT WORK (SIMM PALETTE) ---
+const DATA = [
+  {
+    id: "mentale", num: "01", tag: "SALUTE MENTALE PERINATALE", name: "Nascere Insieme",
+    subtitle: "Un ponte di prossimità per il benessere nel post partum",
+    place: "Appennino Bolognese · Emilia-Romagna",
+    tone: "#b90d49", soft: "#fdebf1", icon: "✦", duration: 18,
+    pop: "Neomamme entro 12 mesi dal parto e famiglie, con priorità a frazioni isolate e vulnerabilità di accesso.",
+    goal: "Incrementare l’accesso tempestivo e la continuità del supporto psicosociale dopo il parto, riducendo le barriere geografiche e linguistiche.",
+    need: "La distanza dai servizi, l’assenza di richiamo sistematico e la frammentazione tra consultori, ostetriche, MMG/PLS e salute mentale possono rendere invisibile il disagio perinatale. Lo screening identifica bisogni di approfondimento: non è una diagnosi.",
+    baseline: [
+      ["Valutazione benessere psicologico", "29%", "simulato"],
+      ["Visita post partum entro 8 settimane", "52%", "simulato"],
+      ["Difficoltà a raggiungere il consultorio", "32%", "simulato"],
+      ["Sintomi depressivi significativi", "17%", "simulato"],
+      ["Parti di residenti (2024)", "262", "documentale"]
+    ],
+    objectives: [
+      ["O1 · Raggiungere", "Creare un sistema di contatto universale, consensuale e accessibile dopo il parto."],
+      ["O2 · Connettere", "Offrire valutazione tempestiva e invio protetto in équipe in presenza o da remoto."],
+      ["O3 · Sostenere", "Attivare peer support, mediazione e accompagnamento nelle frazioni."]
+    ],
+    indicators: [
+      { label: "Valutazione benessere", baseStr: "29% [S]", targetStr: "≥65%", base: 29, target: 65, source: "Cartella / audit" },
+      { label: "Visita entro 8 sett.", baseStr: "52% [S]", targetStr: "≥70%", base: 52, target: 70, source: "Flussi consultoriali" },
+      { label: "Copertura contatto", baseStr: "29%*", targetStr: "≥75%", base: 29, target: 75, source: "Registro consultoriale" },
+      { label: "Presa in carico ≤14gg", baseStr: "0% (n.d.)", targetStr: "≥80%", base: 0, target: 80, source: "Tracciamento invii" }
+    ],
+    activities: [
+      ["Mappatura, tavolo e co-design", "Distretto + consultori", "Focus group con neomamme e operatori; mappa tempi di viaggio e protocollo condiviso.", 1, 3],
+      ["Formazione e protocollo continuità", "Consultori + psicologia", "Contatto programmato post dimissione, consenso e invio clinico strutturato.", 3, 5],
+      ["Sportelli di prossimità", "Ostetriche + IFeC + comuni", "Punti periodici nelle valli, contatto telefonico scelto e opzione teleconsulenza.", 5, 15],
+      ["Gruppi di supporto tra pari", "Associazioni + servizi sociali", "Incontri di gruppo con facilitazione, mediazione e accompagnamento su richiesta.", 5, 16],
+      ["Valutazione e stabilizzazione", "Ufficio di piano + valutatore", "Audit disaggregato per area e lingua; report finale e piano di sostenibilità.", 12, 18]
+    ],
+    risks: [
+      ["Privacy e stigma", "Invito neutro, consenso informato, nessun invio clinico automatico."],
+      ["Trasporti e digital divide", "Presenza itinerante, canale telefonico, mediazione e accompagnamento."],
+      ["Capacità specialistica", "Accordi sulle priorità e monitoraggio tempi; non promettere slot non disponibili."]
+    ],
+    participatory: "Due focus group con neomamme in aree centrali e isolate (anche da remoto), interviste a mediatori e operatori e un laboratorio di co-design con restituzione pubblica.",
+    outcomes: ["Maggiore continuità dopo la dimissione", "Accesso più equo in aree periferiche", "Rete perinatale con percorsi espliciti"],
+    platform: {
+      resources: ["Dati di contatto", "Competenze cliniche", "Spazi di prossimità", "Tempo & Peer support", "Fondi & Trasporto", "Teleconsulenza"],
+      actors: [
+        { name: "Neomamme e famiglie", produces: ["Dati di contatto", "Tempo & Peer support"], consumes: ["Competenze cliniche", "Spazi di prossimità", "Tempo & Peer support", "Fondi & Trasporto", "Teleconsulenza"] },
+        { name: "Consultori e Ostetriche", produces: ["Competenze cliniche", "Teleconsulenza"], consumes: ["Dati di contatto", "Spazi di prossimità"] },
+        { name: "Punti Nascita / MMG", produces: ["Dati di contatto"], consumes: ["Competenze cliniche"] },
+        { name: "Comuni e Servizi Sociali", produces: ["Spazi di prossimità", "Fondi & Trasporto"], consumes: ["Dati di contatto"] },
+        { name: "ETS (Mamme Montagna / Ponti)", produces: ["Tempo & Peer support"], consumes: ["Spazi di prossimità", "Fondi & Trasporto", "Competenze cliniche"] }
+      ]
+    },
+    campaign: {
+      slogan: "Dopo il parto, non sei sola nel percorso.",
+      body: "Un punto di ascolto vicino a te. Informazioni, gruppi tra genitori e orientamento ai servizi del territorio: senza giudizio e con riservatezza.",
+      cta: "Chiedi al consultorio o all’ostetrica come partecipare.",
+      channels: "Consultori, PLS, punti nascita, farmacie, biblioteche, gruppi locali; poster e messaggi brevi multilingua",
+      variants: [
+        ["Neomamme", "Il tuo benessere conta. Parlarne può essere il primo passo per ricevere supporto."],
+        ["Partner e familiari", "Ascolta, accompagna, informati: il sostegno è un lavoro di comunità."],
+        ["Professionisti", "Un contatto programmato e un invio tracciato fanno la differenza."]
+      ]
+    }
+  },
+  {
+    id: "diabete", num: "02", tag: "CRONICITÀ E PREVENZIONE", name: "Diabete senza Distanze",
+    subtitle: "Una rete territoriale per non perdere i controlli",
+    place: "Distretto H4 · Pomezia e Ardea · Lazio",
+    tone: "#9a1651", soft: "#fdf0f6", icon: "◈", duration: 18,
+    pop: "Adulti con diabete, con priorità a persone fuori PDTA, controlli saltati, barriere socioeconomiche e residenti ad Ardea.",
+    goal: "Migliorare presa in carico proattiva, continuità dei controlli e accesso equo al PDTA del diabete nel Distretto H4.",
+    need: "Nel caso didattico il percorso è frammentato: iscrizione ai PDTA limitata, esami non sistematici e differenze Pomezia–Ardea. La priorità non è una campagna generica sugli stili di vita, ma un sistema di presa in carico e follow-up che rimuova barriere concrete.",
+    baseline: [
+      ["Persone con diabete", "9.424", "simulato"],
+      ["Inserimento PDTA", "41%", "simulato"],
+      ["HbA1c annuale", "54%", "simulato"],
+      ["Controllo funzione renale", "47%", "simulato"],
+      ["Fondo oculare annuale", "23%", "simulato"],
+      ["Controlli saltati", "31%", "simulato"]
+    ],
+    objectives: [
+      ["O1 · Individuare", "Stratificare le persone non seguite e comprendere le ragioni delle mancate visite."],
+      ["O2 · Coordinare", "Attivare recall concordati, navigazione di percorso e agenda integrata."],
+      ["O3 · Abilitare", "Rafforzare educazione terapeutica, auto-gestione e supporto sociale."]
+    ],
+    indicators: [
+      { label: "Inserimento PDTA", baseStr: "41% [S]", targetStr: "≥60%", base: 41, target: 60, source: "Registro PDTA" },
+      { label: "Controllo HbA1c", baseStr: "54% [S]", targetStr: "≥75%", base: 54, target: 75, source: "Laboratorio" },
+      { label: "Funzione renale", baseStr: "47% [S]", targetStr: "≥65%", base: 47, target: 65, source: "Laboratorio" },
+      { label: "Fondo oculare", baseStr: "23% [S]", targetStr: "≥45%", base: 23, target: 45, source: "Flussi specialistici" },
+      { label: "Controlli mancati", baseStr: "31% [S]", targetStr: "≤20%", base: 31, target: 20, source: "Agende e richiamo" }
+    ],
+    activities: [
+      ["Baseline e co-design Pomezia–Ardea", "Distretto + MMG + associazioni", "Audit campione e interviste a persone che saltano controlli; mappa gap.", 1, 3],
+      ["Percorso integrato e navigation", "Diabetologia + MMG + infermieri", "Criteri di inclusione, liste di richiamo autorizzate e referente unico.", 3, 6],
+      ["Recall e giornate di prossimità", "IFeC + punti territoriali", "Promemoria non stigmatizzanti, monitoraggio esami e incontri ad Ardea.", 5, 15],
+      ["Educazione terapeutica e peer", "Diabetologia + APS", "Cicli su gestione quotidiana, accesso ai servizi e riconoscimento segnali.", 6, 16],
+      ["Valutazione e scale-up", "Direzione Distretto + qualità", "Confronto prima/dopo e per comune; aggiornamento procedure PDTA.", 12, 18]
+    ],
+    risks: [
+      ["Lista pazienti incompleta", "Validare definizioni e qualità del dato prima di stratificare."],
+      ["Sovraccarico agende", "Gestione capacità e recall progressivo, priorità clinica decisa dai professionisti."],
+      ["Barriere sociali e digitali", "Canali misti, trasporto solidale, alfabetizzazione sanitaria."]
+    ],
+    participatory: "World Café in due sedi, una a Pomezia e una ad Ardea, con persone inserite e non inserite in PDTA. Journey mapping dall’appuntamento alla refertazione.",
+    outcomes: ["Più persone incluse nel PDTA", "Meno mancate visite", "Riduzione delle disuguaglianze tra comuni"],
+    platform: {
+      resources: ["Dati clinici & Referti", "Piani di cura PDTA", "Sistema Recall", "Spazi prossimità Ardea", "Educazione & Peer", "Fondi & Logistica"],
+      actors: [
+        { name: "Persone con diabete", produces: ["Dati clinici & Referti", "Educazione & Peer"], consumes: ["Piani di cura PDTA", "Sistema Recall", "Spazi prossimità Ardea", "Educazione & Peer"] },
+        { name: "Diabetologia & IFeC", produces: ["Piani di cura PDTA", "Sistema Recall"], consumes: ["Dati clinici & Referti", "Spazi prossimità Ardea"] },
+        { name: "MMG & Farmacie", produces: ["Dati clinici & Referti", "Sistema Recall"], consumes: ["Piani di cura PDTA"] },
+        { name: "Distretto H4 & Comuni", produces: ["Fondi & Logistica", "Spazi prossimità Ardea"], consumes: ["Dati clinici & Referti"] },
+        { name: "APS Diabete / Rete Ardea", produces: ["Educazione & Peer"], consumes: ["Fondi & Logistica", "Spazi prossimità Ardea"] }
+      ]
+    },
+    campaign: {
+      slogan: "Il controllo giusto, al momento giusto.",
+      body: "Un percorso più semplice per orientarti tra appuntamenti, esami e incontri educativi. La salute si costruisce con continuità, senza lasciare indietro nessuno.",
+      cta: "Chiedi al tuo medico o al servizio diabetologico informazioni sul percorso.",
+      channels: "MMG, diabetologia, farmacie, associazioni, punti di prossimità, schede stampate e social locali",
+      variants: [
+        ["Persone con diabete", "Non perdere il filo: chiedi come organizzare i tuoi controlli."],
+        ["Caregiver", "Aiuta a ricordare gli appuntamenti e a orientarsi nei servizi."],
+        ["Professionisti", "Richiamo proattivo, invio tracciato e attenzione al gap Ardea–Pomezia."]
+      ]
+    }
+  },
+  {
+    id: "fragilita", num: "03", tag: "INVECCHIAMENTO E COMUNITÀ", name: "Vicini di Comunità",
+    subtitle: "Prevenire l’isolamento con una rete di prossimità",
+    place: "Distretto 40 · Corleone e sei comuni · Sicilia",
+    tone: "#c84b28", soft: "#fff4eb", icon: "◎", duration: 18,
+    pop: "Persone ≥65 anni con reti sociali deboli e/o fragilità; priorità a chi segnala solitudine, mobilità ridotta e assenza di supporto.",
+    goal: "Individuare precocemente isolamento sociale e fragilità e facilitare connessioni sociali e accesso integrato ai servizi nei sette comuni.",
+    need: "Vivere soli, essere isolati e sentirsi soli sono condizioni diverse. Nel caso didattico manca una connessione sistematica tra segnalazioni dei servizi e reti civiche; trasporti e geografia rendono meno fruibili le opportunità di socialità.",
+    baseline: [
+      ["Solitudine frequente ≥65", "29,4%", "simulato"],
+      ["Contatti sociali <1/settimana", "22,6%", "simulato"],
+      ["Non partecipa ad attività", "64,2%", "simulato"],
+      ["Difficoltà raggiungere servizi ≥65", "38,5%", "simulato"],
+      ["Fragilità multidimensionale ≥65", "32,4%", "simulato"],
+      ["Residenti (dato storico)", "23.093", "documentale"]
+    ],
+    objectives: [
+      ["O1 · Riconoscere", "Creare segnalazioni consensuali e una valutazione sociale non stigmatizzante."],
+      ["O2 · Connettere", "Attivare accompagnamento, socialità di prossimità e incontri intergenerazionali."],
+      ["O3 · Integrare", "Collegare volontariato, servizi sociali, PUA/CdC e cure domiciliari."]
+    ],
+    indicators: [
+      { label: "Piani connessione", baseStr: "0% (n.d.)", targetStr: "≥60%", base: 0, target: 60, source: "Registro facilitatori" },
+      { label: "Partecipazione attiva", baseStr: "35,8% [S]", targetStr: "≥55%", base: 36, target: 55, source: "Registri attività" },
+      { label: "Solitudine (riduz.)", baseStr: "29,4% [S]", targetStr: "≤23%", base: 29, target: 23, source: "Questionario pre/post" },
+      { label: "Contatti rari (riduz.)", baseStr: "22,6% [S]", targetStr: "≤18%", base: 23, target: 18, source: "Valutazione sociale" }
+    ],
+    activities: [
+      ["Mappatura e ascolto nei 7 comuni", "Distretto + comuni + ETS", "Interviste con anziani e caregiver, accessibilità trasporti e reti informali.", 1, 3],
+      ["Protocollo segnalazione e consenso", "Servizi sociali + PUA + CdC", "Criteri chiari, triage sociale ed escalation ai servizi competenti.", 3, 5],
+      ["Facilitatori e trasporto solidale", "Comuni + ETS + volontari", "Contatti concordati, accompagnamento e inclusione in attività locali.", 5, 15],
+      ["Laboratori e reti di vicinato", "Centri anziani + associazioni", "Micro-eventi nei piccoli comuni, visite programmate e scambio intergenerazionale.", 6, 16],
+      ["Valutazione e continuità", "Distretto + cabina di regia", "Misura di reti e solitudine, audit copertura per comune e sostenibilità ETS.", 12, 18]
+    ],
+    risks: [
+      ["Etichette e stigmatizzazione", "Proporre opportunità relazionali, non classificare pubblicamente la fragilità."],
+      ["Confini di ruolo volontari", "I volontari non sostituiscono i professionisti: canali di escalation chiari."],
+      ["Selezione dei più attivi", "Outreach attivo nei piccoli centri e monitoraggio della copertura."]
+    ],
+    participatory: "Sette micro-laboratori territoriali con anziani, caregiver, enti locali e volontari, più incontri domiciliari su consenso per persone difficili da raggiungere.",
+    outcomes: ["Reti relazionali più accessibili", "Individuazione precoce dei bisogni", "Collaborazione strutturata fra servizi ed ETS"],
+    platform: {
+      resources: ["Segnalazioni bisogni", "Tempo volontari", "Trasporto solidale", "Spazi aggregazione", "Fondi microprogetti", "Presa in carico PUA"],
+      actors: [
+        { name: "Persone ≥65 e caregiver", produces: ["Segnalazioni bisogni", "Tempo volontari"], consumes: ["Tempo volontari", "Trasporto solidale", "Spazi aggregazione", "Presa in carico PUA"] },
+        { name: "Auser / ODV / Circoli", produces: ["Tempo volontari", "Trasporto solidale"], consumes: ["Spazi aggregazione", "Fondi microprogetti", "Segnalazioni bisogni"] },
+        { name: "Sette Comuni & Sociale", produces: ["Spazi aggregazione", "Fondi microprogetti"], consumes: ["Segnalazioni bisogni"] },
+        { name: "Distretto 40 / PUA / MMG", produces: ["Presa in carico PUA", "Segnalazioni bisogni"], consumes: ["Tempo volontari"] }
+      ]
+    },
+    campaign: {
+      slogan: "Un paese è più vicino quando ci incontriamo.",
+      body: "Incontri, compagnia e orientamento per chi desidera più occasioni di relazione. Attività nei comuni, con il supporto di associazioni e servizi territoriali.",
+      cta: "Chiedi al Comune, al centro anziani o ai servizi territoriali come aderire.",
+      channels: "Bacheche comunali, farmacie, parrocchie, MMG, radio locale, volantini a caratteri grandi, passaparola",
+      variants: [
+        ["Persone anziane", "Una conversazione, un’attività, una nuova conoscenza: c’è spazio anche per te."],
+        ["Familiari", "Condividi le opportunità locali e chiedi un orientamento."],
+        ["Associazioni e volontari", "Mettiamo in rete iniziative, accompagnamenti e segnalazioni consensuali."]
+      ]
+    }
+  }
+];
+
+const TERRITORY_META = [
+  {
+    label:'Appennino Bolognese', unit:'parti/anno',
+    populationLabel:'Parti/anno selezionati',
+    metricHint:'Quote operative comunali coerenti con il totale distrettuale di 262 parti 2024 richiamato nel dossier.',
+    core:['Marzabotto','Vergato','Alto Reno Terme'],
+    fragile:['Lizzano in Belvedere','Castel d’Aiano','Camugnano','San Benedetto Val di Sambro','Monzuno'],
+    places:[
+      {name:'Alto Reno Terme',lat:44.159,lng:10.977,target:30,diff:2.2,role:'Polo consultoriale'},
+      {name:'Camugnano',lat:44.172,lng:11.087,target:15,diff:4.2,role:'Area montana prioritaria'},
+      {name:'Castel d’Aiano',lat:44.275,lng:11.005,target:13,diff:4.4,role:'Area collinare distante'},
+      {name:'Castel di Casio',lat:44.165,lng:11.039,target:14,diff:3.4,role:'Comune intermedio'},
+      {name:'Castiglione dei Pepoli',lat:44.144,lng:11.152,target:21,diff:3.3,role:'Punto itinerante'},
+      {name:'Gaggio Montano',lat:44.194,lng:10.936,target:23,diff:2.8,role:'Snodo territoriale'},
+      {name:'Grizzana Morandi',lat:44.259,lng:11.152,target:18,diff:2.9,role:'Area collinare'},
+      {name:'Lizzano in Belvedere',lat:44.162,lng:10.895,target:17,diff:4.6,role:'Alta priorità prossimità'},
+      {name:'Marzabotto',lat:44.340,lng:11.205,target:39,diff:1.8,role:'Polo fondovalle'},
+      {name:'Monzuno',lat:44.278,lng:11.268,target:20,diff:3.5,role:'Criticità mobilità'},
+      {name:'Vergato',lat:44.285,lng:11.112,target:34,diff:1.9,role:'Nodo centrale'},
+      {name:'San Benedetto V.S.',lat:44.215,lng:11.235,target:18,diff:3.8,role:'12° comune (rettifica)'}
+    ]
+  },
+  {
+    label:'Distretto H4 · Pomezia e Ardea', unit:'persone con diabete',
+    populationLabel:'Persone con diabete [S]',
+    metricHint:'Ripartizione Pomezia/Ardea derivata dalle prevalenze comunali simulate [S] sul totale di 9.424 persone.',
+    core:['Pomezia'],
+    fragile:['Ardea'],
+    places:[
+      {name:'Pomezia',lat:41.670,lng:12.501,target:4985,diff:2.3,role:'Hub distrettuale H4'},
+      {name:'Ardea',lat:41.611,lng:12.543,target:4439,diff:3.8,role:'Aree diffuse / gap PDTA'}
+    ]
+  },
+  {
+    label:'Distretto 40 · Corleone', unit:'residenti',
+    populationLabel:'Residenti distretto',
+    metricHint:'Residenti documentali storici (PIAO 2023–2025); stime ≥65 (29,1% [S]) e contatti rari (22,6% [S]).',
+    core:['Corleone','Bisacquino','Chiusa Sclafani'],
+    fragile:['Giuliana','Roccamena','Contessa Entellina','Campofiorito'],
+    places:[
+      {name:'Corleone',lat:37.813,lng:13.300,target:10493,diff:2.1,role:'Hub distrettuale'},
+      {name:'Bisacquino',lat:37.704,lng:13.260,target:4190,diff:3.4,role:'Snodo intermedio'},
+      {name:'Chiusa Sclafani',lat:37.676,lng:13.271,target:2577,diff:3.7,role:'Comune interno'},
+      {name:'Contessa Entellina',lat:37.731,lng:13.182,target:1529,diff:3.9,role:'Presidio equità'},
+      {name:'Giuliana',lat:37.674,lng:13.232,target:1731,diff:4.3,role:'Alta dispersione'},
+      {name:'Campofiorito',lat:37.753,lng:13.268,target:1179,diff:3.6,role:'Piccolo centro'},
+      {name:'Roccamena',lat:37.832,lng:13.155,target:1394,diff:4.1,role:'Azione dedicata'}
+    ]
+  }
+];
+
+const SIM_DEFAULTS = [
+  {risk:100, months:18, budget:125000, fte:1.5, unit:175, contacts:80, accept:65, retain:78, efficacy:65, travel:true, peers:true},
+  {risk:100, months:18, budget:165000, fte:2.5, unit:92,  contacts:55, accept:68, retain:77, efficacy:65, travel:true, peers:true},
+  {risk:22.6,months:18, budget:114000, fte:2.0, unit:115, contacts:70, accept:65, retain:72, efficacy:60, travel:true, peers:true}
+];
+
+const SIM_META = [
+  {riskLabel:'Quota di nascite incluse', riskMin:30, riskMax:100, base:29, other:38, m1:'Valutazione benessere post partum', m2:'Supporto tempestivo'},
+  {riskLabel:'Quota persone con diabete da invitare', riskMin:20, riskMax:100, base:41, other:54, m1:'Iscrizione PDTA', m2:'Monitoraggio HbA1c annuale'},
+  {riskLabel:'Quota ≥65 con contatti sociali rari [S]', riskMin:8, riskMax:45, base:22.6, other:29.4, m1:'Contatti sociali <1/settimana', m2:'Solitudine frequente'}
+];
+
+const SOURCE_DOCS = [
+  ['Consegna ufficiale del workshop','PDF','fonti/consegna_workshop_simm.pdf','Obiettivo, sei passaggi del lavoro, materiali richiesti e fase di comunicazione.'],
+  ['Project work 1 · Salute mentale','DOCX','fonti/project_work_1_salute_mentale.docx','Profilo di comunità, capitale sociale e organizzazione del Distretto dell’Appennino Bolognese.'],
+  ['Project work 2 · Diabete','DOCX','fonti/project_work_2_diabete.docx','Profilo di comunità, capitale sociale e organizzazione del Distretto H4 – Pomezia e Ardea.'],
+  ['Project work 3 · Fragilità','DOCX','fonti/project_work_3_fragilita.docx','Profilo di comunità, capitale sociale e organizzazione del Distretto 40 – Corleone.']
+];
+
+let current = 0;
+let tab = 'overview';
+let audience = 0;
+let scenarios = [];
+let territorySel = [];
+let territoryFocus = [0, 0, 0];
+let hoveredPlatNode = null;
+
+const fnum = (n,d=0) => new Intl.NumberFormat('it-IT',{maximumFractionDigits:d}).format(n);
+const fmt = n => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+const pct = n => fnum(n,1) + '%';
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const esc = s => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+
+function init() {
+  scenarios = SIM_DEFAULTS.map(x => ({...x}));
+  territorySel = TERRITORY_META.map(m => m.places.map(() => true));
+  renderCards();
+  render();
+}
+
+function renderCards() {
+  document.getElementById('projectCards').innerHTML = DATA.map((d,i) => `
+    <button class="project-card ${i===current?'active-card':''}" onclick="openProject(${i})" style="--accent:${d.tone};--soft:${d.soft}">
+      <div class="big-symbol">${d.icon}</div>
+      <div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--muted)">PROJECT WORK ${d.num}</div>
+      <strong>${esc(d.name)}</strong>
+      <div style="color:var(--muted); font-weight:700; font-size:12.5px;">${esc(d.place)}</div>
+      <p>${esc(d.subtitle)}</p>
+      <div class="open">Apri il progetto ↗</div>
+    </button>
+  `).join('');
+}
+
+function openProject(i, targetTab='overview') {
+  current = i;
+  tab = targetTab;
+  audience = 0;
+  hoveredPlatNode = null;
+  document.documentElement.style.setProperty('--accent', DATA[i].tone);
+  document.documentElement.style.setProperty('--soft', DATA[i].soft);
+  renderCards();
+  render();
+  document.getElementById('workspace').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function setTab(t) {
+  tab = t;
+  hoveredPlatNode = null;
+  render();
+}
+
+// --- LE 6 SCHEDE (SOSTITUITA SOLO "RETE E GOVERNANCE" CON "PIATTAFORMA") ---
+const TABS = [
+  { id:'overview', name:'1 · Profilo e Obiettivi', fn: tabOverview },
+  { id:'simulatore', name:'2 · Atlante e Simulatore', fn: tabSimulator },
+  { id:'operativo', name:'3 · Piano Operativo', fn: tabOperative },
+  { id:'piattaforma', name:'4 · Piattaforma', fn: tabPlatform },
+  { id:'campagna', name:'5 · Campagna e Co-design', fn: tabCampaign },
+  { id:'fonti', name:'6 · Metodo e Fonti', fn: tabSources }
+];
+
+function render() {
+  const d = DATA[current];
+  document.getElementById('projectHeading').innerHTML = `
+    <div>
+      <div class="brand-kicker" style="color:#ffdbdf">PROJECT WORK ${d.num} / ${esc(d.tag)}</div>
+      <h2>${esc(d.name)}</h2>
+      <p>${esc(d.subtitle)} · ${esc(d.place)}</p>
+    </div>
+    <div class="heading-symbol">${d.icon}</div>
+  `;
+  document.getElementById('tabs').innerHTML = TABS.map(t =>
+    `<button class="tab ${t.id === tab ? 'active' : ''}" onclick="setTab('${t.id}')">${t.name}</button>`
+  ).join('');
+  const activeTab = TABS.find(t => t.id === tab);
+  document.getElementById('body').innerHTML = activeTab ? activeTab.fn(d) : '';
+  if (tab === 'simulatore') updateSimOutput();
+}
+
+// ============================================================================
+// SCHEDA 1: PROFILO E OBIETTIVI
+// ============================================================================
+function svgDumbbell(indicators) {
+  const rowH = 52;
+  const h = indicators.length * rowH + 34;
+  const rows = indicators.map((ind, i) => {
+    const y = i * rowH + 38;
+    const x1 = 175 + (ind.base / 100) * 390;
+    const x2 = 175 + (ind.target / 100) * 390;
+    const dir = ind.target >= ind.base ? 1 : -1;
+    return `
+      <line x1="175" x2="565" y1="${y}" y2="${y}" stroke="#f5ebef" stroke-width="1"/>
+      <text x="162" y="${y+4}" text-anchor="end" class="dumbbell-text">${esc(ind.label)}</text>
+      <line x1="${x1}" x2="${x2}" y1="${y}" y2="${y}" class="dumbbell-line"/>
+      <circle cx="${x1}" cy="${y}" r="6.5" class="dumbbell-base"/>
+      <circle cx="${x2}" cy="${y}" r="8.5" class="dumbbell-target"/>
+      <text x="${x1 - dir*8}" y="${y-12}" text-anchor="middle" class="dumbbell-val" fill="#786b74">${esc(ind.baseStr)}</text>
+      <text x="${x2 + dir*8}" y="${y-12}" text-anchor="middle" class="dumbbell-val" fill="var(--accent)">${esc(ind.targetStr)}</text>
+    `;
+  }).join('');
+  return `
+    <div class="chart-container" style="margin-top:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:11.5px;font-weight:800;">
+        <span style="color:#786b74;">● Baseline dossier</span>
+        <span style="color:var(--accent);">● Target operativo (18 mesi)</span>
+      </div>
+      <svg viewBox="0 0 640 ${h}" width="100%" height="${h}">${rows}</svg>
+    </div>
+  `;
+}
+
+function tabOverview(d) {
+  return `
+    <span class="section-label">DIAGNOSI DI COMUNITÀ E QUADRO LOGICO</span>
+    <div class="two">
+      <div>
+        <h2>Il bisogno, prima della soluzione.</h2>
+        <p style="font-size:17px; color:var(--ink); font-weight:500;">${esc(d.need)}</p>
+        <div class="inner" style="margin-top:18px;">
+          <h3>Obiettivo specifico</h3>
+          <p>${esc(d.goal)}</p>
+          <h3 style="margin-top:16px;">Destinatari prioritari</h3>
+          <p>${esc(d.pop)}</p>
+        </div>
+        <div class="inner" style="margin-top:16px;">
+          <h3>Indicatori del dossier</h3>
+          ${d.baseline.map(([a,b,c]) => `<div class="data-row"><span>${esc(a)} <small style="color:#8d7982">· ${c}</small></span><b>${esc(b)}</b></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:10px;">Scostamento atteso: Baseline → Target</h3>
+        ${svgDumbbell(d.indicators)}
+        <div class="inner">
+          <h3>Fonti di verifica KPI</h3>
+          ${d.indicators.map(ind => `<div class="data-row"><span>${esc(ind.label)}</span><b>${esc(ind.source)}</b></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <span class="section-label">TEORIA DEL CAMBIAMENTO</span>
+      <div class="objectives">
+        ${d.objectives.map(o => `<div class="objective"><h3>${esc(o[0])}</h3><p>${esc(o[1])}</p></div>`).join('')}
+      </div>
+    </div>
+    <div class="note">I valori riportati come <b>[S] / simulato</b> provengono dalle tabelle didattiche dei dossier. Prima dell'avvio reale occorre validare denominatori e registri locali.</div>
+  `;
+}
+
+// ============================================================================
+// SCHEDA 2: ATLANTE E SIMULATORE
+// ============================================================================
+function getTerritoryProf(i = current) {
+  const m = TERRITORY_META[i];
+  const picks = m.places.filter((_, idx) => territorySel[i][idx]);
+  const totalAll = m.places.reduce((s,p) => s + p.target, 0);
+  const tot = picks.reduce((s,p) => s + p.target, 0);
+  const diff = picks.length ? picks.reduce((s,p) => s + p.diff * p.target, 0) / tot : 0;
+  return { meta:m, picks, tot, totalAll, diff, share: totalAll ? tot/totalAll : 0 };
+}
+
+function calculateModel(override) {
+  const x = {...(override || scenarios[current])};
+  const prof = getTerritoryProf(current);
+  const i = current;
+  const m = SIM_META[i];
+  const duration = x.months / 12;
+  const eligible = Math.round(i===0 ? prof.tot * duration * x.risk/100 : i===1 ? prof.tot * x.risk/100 : prof.tot * 0.291 * x.risk/100);
+
+  const geoFriction = prof.diff / 5;
+  const multiPenalty = Math.max(0, (prof.picks.length - 1) * 1.2);
+  const mitigatedGeo = Math.max(0, geoFriction * 12 + multiPenalty - (x.travel ? 6 : 0));
+
+  const contactRate = clamp(x.contacts + (x.travel ? 9 : 0) + (x.peers ? 5 : 0) - mitigatedGeo, 0, 100) / 100;
+  const acceptRate = clamp(x.accept + (x.peers ? 5 : 0) - geoFriction * 4, 0, 100) / 100;
+
+  const invitations = Math.round(eligible * contactRate);
+  const demand = Math.round(invitations * acceptRate);
+
+  const capacityPerFte = [15, 23, 20][i];
+  const capFactor = clamp(1 - geoFriction * 0.12 - Math.max(0, prof.picks.length - 1) * 0.012 + (x.travel ? 0.05 : 0), 0.72, 1.08);
+  const staffCap = Math.floor(x.fte * x.months * capacityPerFte * capFactor);
+
+  const fixed = [29000, 45000, 27000][i] * Math.pow(x.months / 18, 0.7);
+  const staffC = x.fte * x.months * [1750, 1650, 1450][i];
+  const geoC = (x.travel ? [11000, 15000, 16000][i] * duration / 1.5 : 0)
+             + (x.peers ? [5000, 9000, 7000][i] * duration / 1.5 : 0)
+             + duration * (1800 + prof.picks.length * 600 + geoFriction * 2400);
+
+  const overhead = fixed + staffC + geoC;
+  const affordable = Math.max(0, Math.floor((x.budget - overhead) / x.unit));
+
+  const enrolled = clamp(Math.min(demand, staffCap, affordable), 0, eligible);
+  const completed = Math.round(enrolled * x.retain / 100);
+  const varC = enrolled * x.unit;
+  const spending = overhead + varC;
+  const shortfall = Math.max(0, overhead - x.budget);
+
+  const drivers = [['Domanda', demand], ['Capacità équipe', staffCap], ['Budget', affordable]];
+  const minVal = Math.min(demand, staffCap, affordable);
+  const bottleneck = drivers.filter(z => z[1] === minVal).map(z => z[0]).join(' / ');
+
+  const uplift = x.efficacy / 100;
+  const reach = eligible ? enrolled / eligible : 0;
+  const coverage = eligible ? completed / eligible : 0;
+  let metric, metric2;
+  if (i === 2) {
+    const over65 = Math.round(prof.tot * 0.291);
+    const absChange = over65 ? (completed * uplift / over65) * 100 : 0;
+    metric = clamp(m.base - absChange, 0, m.base);
+    metric2 = clamp(m.other - absChange * 0.65, 0, m.other);
+  } else {
+    metric = clamp(m.base + (100 - m.base) * reach * uplift, m.base, 100);
+    metric2 = clamp(m.other + (100 - m.other) * coverage * uplift, m.other, 100);
+  }
+
+  return {
+    eligible, invitations, demand, staffCap, affordable, enrolled, completed,
+    fixed, staffC, geoC, varC, spending, overhead, shortfall, bottleneck,
+    geoFriction, reach, coverage, metric, metric2,
+    costPer: completed ? spending / completed : null,
+    unused: Math.max(0, x.budget - spending)
+  };
+}
+
+function svgAtlas() {
+  const m = TERRITORY_META[current];
+  const pts = m.places;
+  const lat = pts.map(p => p.lat), lng = pts.map(p => p.lng);
+  const left = Math.min(...lng), right = Math.max(...lng), low = Math.min(...lat), high = Math.max(...lat);
+  const dx = Math.max(0.08, right - left), dy = Math.max(0.06, high - low);
+  const maxT = Math.max(...pts.map(p => p.target), 1);
+
+  const xy = p => [
+    ((p.lng - (left - dx * 0.18)) / (dx * 1.36)) * 520 + 20,
+    (1 - (p.lat - (low - dy * 0.22)) / (dy * 1.44)) * 240 + 25
+  ];
+
+  const bubbles = pts.map((p, i) => {
+    const [cx, cy] = xy(p);
+    const on = territorySel[current][i];
+    const r = Math.max(7, Math.sqrt(p.target / maxT) * 20);
+    const anchor = cx > 420 ? 'end' : 'start';
+    const tx = cx > 420 ? cx - r - 6 : cx + r + 6;
+    const cls = `${on ? 'selected' : 'unselected'} ${p.diff > 3.5 ? 'focused' : ''}`;
+    return `
+      <g class="node ${cls}" onclick="togglePlace(${i})">
+        <circle cx="${cx}" cy="${cy}" r="${on ? r : r * 0.72}"/>
+        <text x="${tx}" y="${cy + 4}" text-anchor="${anchor}">${esc(p.name)}</text>
+      </g>
+    `;
+  }).join('');
+
+  const prof = getTerritoryProf(current);
+  return `
+    <div class="inner" style="background:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <span class="sim-group" style="margin:0">Atlante Territoriale (clic sui comuni)</span>
+        <span style="font-size:11px;font-weight:800;color:var(--brand)">${prof.picks.length}/${pts.length} comuni</span>
+      </div>
+      <div class="preset-bar">
+        <button class="preset-btn" onclick="applyPreset('all')">Distretto completo</button>
+        <button class="preset-btn" onclick="applyPreset('core')">Nucleo pilota</button>
+        <button class="preset-btn" onclick="applyPreset('fragile')">Aree prioritarie</button>
+      </div>
+      <svg class="territory-svg" viewBox="0 0 560 290">
+        <defs><pattern id="g8" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f2e2e8" stroke-width="1"/></pattern></defs>
+        <rect width="560" height="290" fill="#fffafb" rx="14"/>
+        <rect width="560" height="290" fill="url(#g8)" rx="14"/>
+        ${bubbles}
+      </svg>
+      <div class="budget-legend" style="font-size:11px;margin-top:6px;">
+        <span><i style="background:var(--accent);border-radius:50%"></i>Incluso</span>
+        <span><i style="background:#d1bcc4;border-radius:50%"></i>Escluso</span>
+        <span><i style="background:var(--brand-orange);border-radius:50%"></i>Bordo oro = Alto attrito</span>
+      </div>
+      <p class="sim-small" style="margin-top:8px;">Target selezionato: <b>${fnum(prof.tot)} ${esc(m.unit)}</b> (${pct(prof.share*100)}) · Attrito medio: <b>${fnum(prof.diff,1)}/5</b>.</p>
+    </div>
+  `;
+}
+
+window.togglePlace = function(idx) {
+  territorySel[current][idx] = !territorySel[current][idx];
+  if (!territorySel[current].some(Boolean)) territorySel[current][0] = true;
+  render();
+};
+
+window.applyPreset = function(mode) {
+  const m = TERRITORY_META[current];
+  if (mode === 'all') territorySel[current] = m.places.map(() => true);
+  if (mode === 'core') territorySel[current] = m.places.map(p => m.core.includes(p.name));
+  if (mode === 'fragile') territorySel[current] = m.places.map(p => m.fragile.includes(p.name));
+  if (!territorySel[current].some(Boolean)) territorySel[current][0] = true;
+  render();
+};
+
+function svgFunnel(r) {
+  const steps = [
+    { label: "Popolazione eleggibile", val: r.eligible },
+    { label: "Persone contattate", val: r.invitations },
+    { label: "Domanda espressa", val: r.demand },
+    { label: "Iscritti sostenibili", val: r.enrolled },
+    { label: "Percorsi completati", val: r.completed }
+  ];
+  const max = Math.max(1, r.eligible);
+  let html = '';
+  for (let i = 0; i < 5; i++) {
+    const w = (steps[i].val / max) * 340;
+    const x = 185 + (340 - w) / 2;
+    const y = i * 44 + 14;
+    if (i < 4) {
+      const w2 = (steps[i+1].val / max) * 340;
+      const x2 = 185 + (340 - w2) / 2;
+      html += `<polygon points="${x},${y+24} ${x+w},${y+24} ${x2+w2},${y+44} ${x2},${y+44}" class="funnel-poly"/>`;
+    }
+    const isBottleneck = (i === 3 && r.enrolled < r.demand);
+    const barClass = isBottleneck ? "funnel-bar-active" : "funnel-bar";
+    const dropNote = isBottleneck ? `<text x="${x + w + 8}" y="${y + 16}" class="funnel-drop">⚠ Limite: ${esc(r.bottleneck)}</text>` : '';
+    html += `
+      <rect x="${x}" y="${y}" width="${Math.max(w, 6)}" height="24" class="${barClass}"/>
+      <text x="172" y="${y+16}" text-anchor="end" class="funnel-label">${steps[i].label}</text>
+      <text x="${x + w/2}" y="${y+16}" text-anchor="middle" class="funnel-val">${fnum(steps[i].val)}</text>
+      ${dropNote}
+    `;
+  }
+  return `
+    <div class="chart-container" style="margin:0">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin-bottom:6px;">Cascata di conversione (Funnel)</div>
+      <svg viewBox="0 0 680 235" width="100%" height="235">${html}</svg>
+    </div>
+  `;
+}
+
+function getRadarMetrics(r, x) {
+  return [
+    (r.enrolled / Math.max(1, r.eligible)) * 100,
+    (r.completed / Math.max(1, r.enrolled)) * 100,
+    (1 - r.geoFriction) * 100,
+    clamp((r.varC / Math.max(1, r.spending)) * 160, 0, 100),
+    clamp(100 - Math.abs((r.demand - r.staffCap) / Math.max(1, r.demand, r.staffCap) * 100), 0, 100),
+    (x.travel ? 50 : 0) + (x.peers ? 50 : 0)
+  ];
+}
+
+function svgRadar(r, x) {
+  const baseR = calculateModel(SIM_DEFAULTS[current]);
+  const mActive = getRadarMetrics(r, x);
+  const mBase = getRadarMetrics(baseR, SIM_DEFAULTS[current]);
+
+  const cx = 145, cy = 125, radius = 64;
+  const pt = (val, idx) => {
+    const a = idx * Math.PI / 3 - Math.PI / 2;
+    const sc = (clamp(val, 0, 100) / 100) * radius;
+    return `${cx + sc * Math.cos(a)},${cy + sc * Math.sin(a)}`;
+  };
+
+  const grid = [25, 50, 75, 100].map(v => `<polygon points="${[0,1,2,3,4,5].map(i => pt(v, i)).join(' ')}" class="radar-grid"/>`).join('');
+  const axes = [0,1,2,3,4,5].map(i => `<line x1="${cx}" y1="${cy}" x2="${pt(100,i).split(',')[0]}" y2="${pt(100,i).split(',')[1]}" class="radar-axis"/>`).join('');
+  const polyBase = `<polygon points="${[0,1,2,3,4,5].map(i => pt(mBase[i], i)).join(' ')}" class="radar-poly-base"/>`;
+  const polyActive = `<polygon points="${[0,1,2,3,4,5].map(i => pt(mActive[i], i)).join(' ')}" class="radar-poly-active"/>`;
+
+  const labels = ["Copertura", "Continuità", "Equità Geo", "Efficienza", "Tenuta FTE", "Intensità"];
+  const text = labels.map((l, i) => {
+    const a = i * Math.PI / 3 - Math.PI / 2;
+    const lx = cx + 84 * Math.cos(a);
+    const ly = cy + 84 * Math.sin(a);
+    const anchor = Math.abs(Math.cos(a)) < 0.15 ? "middle" : (Math.cos(a) < 0 ? "end" : "start");
+    const dy = Math.sin(a) < -0.2 ? -3 : (Math.sin(a) > 0.2 ? 10 : 4);
+    return `<text x="${lx}" y="${ly + dy}" text-anchor="${anchor}" class="radar-label">${l}</text>`;
+  }).join('');
+
+  return `
+    <div class="chart-container" style="margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin-bottom:4px;align-self:flex-start;">Profilo Multi-Dimensionale</div>
+      <svg viewBox="0 0 290 250" width="100%" height="230">${grid}${axes}${polyBase}${polyActive}${text}</svg>
+      <div class="budget-legend" style="margin-top:2px;font-size:11px;">
+        <span><i style="background:var(--accent)"></i>Scenario attivo</span>
+        <span><i style="background:#9a858f"></i>Base iniziale</span>
+      </div>
+    </div>
+  `;
+}
+
+function svgBudgetStack(r, x) {
+  const tot = Math.max(1, r.spending);
+  const pFixed = (r.fixed / tot) * 100;
+  const pFte = (r.staffC / tot) * 100;
+  const pGeo = (r.geoC / tot) * 100;
+  const pVar = (r.varC / tot) * 100;
+  return `
+    <div class="inner" style="background:#fff;display:flex;flex-direction:column;justify-content:center;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin-bottom:8px;">Struttura Costi e Budget</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+        <strong style="font-size:19px;font-family:Manrope;">${fmt(r.spending)}</strong>
+        <span style="font-size:12px;color:var(--muted);">su ${fmt(x.budget)} stanziati</span>
+      </div>
+      <div class="budget-stack">
+        <div class="stack-fixed" style="width:${pFixed}%" title="Fissi: ${fmt(r.fixed)}">${pFixed>12?'Fissi':''}</div>
+        <div class="stack-fte" style="width:${pFte}%" title="Équipe FTE: ${fmt(r.staffC)}">${pFte>12?'FTE':''}</div>
+        <div class="stack-geo" style="width:${pGeo}%" title="Mobilità & Rete: ${fmt(r.geoC)}">${pGeo>12?'Rete':''}</div>
+        <div class="stack-var" style="width:${pVar}%" title="Variabili iscritti: ${fmt(r.varC)}">${pVar>15?fnum(r.enrolled)+' iscr.':''}</div>
+      </div>
+      <div class="budget-legend">
+        <span><i style="background:#5c1630"></i>Fissi (${fmt(r.fixed)})</span>
+        <span><i style="background:#b90d49"></i>Équipe (${fmt(r.staffC)})</span>
+        <span><i style="background:#e68a1e"></i>Mobilità (${fmt(r.geoC)})</span>
+        <span><i style="background:#d94e67"></i>Variabili (${fmt(r.varC)})</span>
+      </div>
+      <p class="sim-small" style="margin-top:10px;">Costo medio per percorso completato: <b>${r.costPer === null ? 'n.d.' : fmt(r.costPer)}</b> · Residuo: <b>${fmt(r.unused)}</b>.</p>
+    </div>
+  `;
+}
+
+function tabSimulator(d) {
+  const x = scenarios[current];
+  const m = SIM_META[current];
+  const slider = (k, lbl, min, max, step, suffix='') => `
+    <div class="sim-control">
+      <div class="topline"><label for="sl-${k}">${lbl}</label><strong id="sv-${k}">${k==='budget'||k==='unit'?fmt(x[k]):x[k]+suffix}</strong></div>
+      <input id="sl-${k}" type="range" min="${min}" max="${max}" step="${step}" value="${x[k]}" oninput="onSimInput('${k}', this.value)">
+    </div>
+  `;
+  const sw = (k, lbl, hint) => `
+    <label class="sim-control sim-switch">
+      <div><strong>${lbl}</strong><div class="sim-small">${hint}</div></div>
+      <input type="checkbox" ${x[k]?'checked':''} onchange="onSimSwitch('${k}', this.checked)">
+    </label>
+  `;
+
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+      <div>
+        <span class="section-label">ATLANTE TERRITORIALE & LABORATORIO SCENARI</span>
+        <h2 style="margin:0;">Configura il perimetro e misura i trade-off</h2>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn secondary small" onclick="resetSim()">↺ Ripristina</button>
+        <button class="btn secondary small" onclick="exportSimCSV()">↓ Esporta CSV</button>
+      </div>
+    </div>
+
+    <div class="sim-layout">
+      <div class="sim-controls">
+        ${svgAtlas()}
+        <span class="sim-group">1 · Perimetro e durata</span>
+        ${slider('risk', m.riskLabel, m.riskMin, m.riskMax, current===2?0.5:5, '%')}
+        ${slider('months', 'Durata del pilota', 6, 36, 3, ' mesi')}
+        <span class="sim-group">2 · Capacità e risorse</span>
+        ${slider('budget', 'Budget disponibile', 25000, 350000, 5000, '€')}
+        ${slider('fte', 'Équipe dedicata (FTE)', 0.5, 8, 0.5, ' FTE')}
+        ${slider('unit', 'Costo variabile per iscritto', 30, 450, 5, '€')}
+        <span class="sim-group">3 · Adesione e azioni abilitanti</span>
+        ${slider('contacts', 'Contattabilità di base', 15, 90, 5, '%')}
+        ${slider('accept', 'Adesione tra contattati', 20, 90, 5, '%')}
+        ${slider('retain', 'Completamento percorso', 30, 95, 5, '%')}
+        ${slider('efficacy', 'Coefficiente cambiamento', 10, 90, 5, '%')}
+        ${sw('travel', 'Prossimità e trasporto', '+9 p.p. contattabilità e mitigazione attrito geografico')}
+        ${sw('peers', 'Reti tra pari e associazioni', '+5 p.p. contattabilità e +5 p.p. adesione')}
+      </div>
+      <div class="sim-results" id="sim-output"></div>
+    </div>
+  `;
+}
+
+window.onSimInput = function(k, val) {
+  scenarios[current][k] = Number(val);
+  const el = document.getElementById('sv-' + k);
+  if (el) {
+    const v = scenarios[current][k];
+    el.textContent = (k === 'budget' || k === 'unit') ? fmt(v) : (k === 'fte' ? fnum(v,1)+' FTE' : (k === 'months' ? v+' mesi' : v+'%'));
+  }
+  updateSimOutput();
+};
+
+window.onSimSwitch = function(k, checked) {
+  scenarios[current][k] = Boolean(checked);
+  updateSimOutput();
+};
+
+window.resetSim = function() {
+  scenarios[current] = {...SIM_DEFAULTS[current]};
+  territorySel[current] = TERRITORY_META[current].places.map(() => true);
+  render();
+};
+
+window.exportSimCSV = function() {
+  const r = calculateModel();
+  const x = scenarios[current];
+  const prof = getTerritoryProf();
+  const rows = [
+    ['tipo','chiave','valore'],
+    ['territorio','comuni',prof.picks.map(p=>p.name).join(' | ')],
+    ...Object.entries(x).map(([k,v]) => ['parametro', k, v]),
+    ...Object.entries(r).map(([k,v]) => ['risultato', k, v])
+  ];
+  const blob = new Blob(['\ufeff' + rows.map(row => row.join(';')).join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `scenario_${DATA[current].id}.csv`;
+  a.click();
+};
+
+function updateSimOutput() {
+  const box = document.getElementById('sim-output');
+  if (!box) return;
+  const r = calculateModel();
+  const x = scenarios[current];
+  const m = SIM_META[current];
+  const prof = getTerritoryProf();
+
+  const alertHtml = r.shortfall > 0
+    ? `<div class="sim-notice"><b>⚠️ Budget insufficiente:</b> mancano <b>${fmt(r.shortfall)}</b> per coprire i soli costi fissi, l'équipe e la mobilitazione territoriale.</div>`
+    : r.enrolled < r.demand
+    ? `<div class="sim-notice"><b>Collo di bottiglia attivo (${esc(r.bottleneck)}):</b> ${fnum(r.demand - r.enrolled)} persone interessate restano fuori per vincoli di capacità o budget.</div>`
+    : `<div class="sim-banner"><b>Perimetro attivo:</b> ${prof.picks.map(p=>esc(p.name)).join(', ')}. Domanda interamente coperta nello scenario.</div>`;
+
+  const options = [
+    { name: 'Budget −25%', budget: Math.round(x.budget * 0.75) },
+    { name: 'Budget attuale', budget: x.budget },
+    { name: 'Budget +25%', budget: Math.round(x.budget * 1.25) }
+  ].map(o => ({ ...o, res: calculateModel({...x, budget: o.budget}) }));
+
+  box.innerHTML = `
+    <div class="sim-kpis">
+      <div class="sim-kpi"><small>Eleggibili</small><b>${fnum(r.eligible)}</b><span>Target nel periodo</span></div>
+      <div class="sim-kpi"><small>Iscritti reali</small><b>${fnum(r.enrolled)}</b><span>${pct(r.reach*100)} degli eleggibili</span></div>
+      <div class="sim-kpi"><small>Completati</small><b>${fnum(r.completed)}</b><span>${pct(r.coverage*100)} degli eleggibili</span></div>
+    </div>
+    ${alertHtml}
+    ${svgFunnel(r)}
+    <div class="two" style="grid-template-columns:1fr 1fr;gap:16px;">
+      ${svgRadar(r, x)}
+      ${svgBudgetStack(r, x)}
+    </div>
+    <div class="inner" style="background:#fff">
+      <h3>Esiti ipotizzati e sensibilità sul budget</h3>
+      <div class="data-row"><span>${esc(m.m1)}</span><b>${pct(m.base)} → ${pct(r.metric)}</b></div>
+      <div class="data-row"><span>${esc(m.m2)}</span><b>${pct(m.other)} → ${pct(r.metric2)}</b></div>
+      <div class="table-wrap" style="margin-bottom:0">
+        <table>
+          <thead><tr><th>Scenario budget</th><th>Stanziamento</th><th>Iscritti</th><th>Completati</th><th>Spesa</th></tr></thead>
+          <tbody>
+            ${options.map(o => `<tr><td><b>${o.name}</b></td><td>${fmt(o.budget)}</td><td>${fnum(o.res.enrolled)}</td><td>${fnum(o.res.completed)}</td><td>${fmt(o.res.spending)}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// SCHEDA 3: PIANO OPERATIVO (GANTT EDITABILE + RISCHI + VALIDAZIONE)
+// ============================================================================
+function svgGantt() {
+  const acts = DATA[current].activities;
+  const maxM = Math.max(...acts.map(a => Math.max(a[3], a[4])), 18);
+  const quarters = Math.ceil(maxM / 3);
+  let headers = '';
+  for (let q = 1; q <= quarters; q++) {
+    headers += `<div>T${q} (M${(q-1)*3+1}–${q*3})</div>`;
+  }
+  const rows = acts.map(a => {
+    const start = clamp(a[3], 1, maxM);
+    const end = clamp(Math.max(start, a[4]), 1, maxM);
+    const left = ((start - 1) / maxM) * 100;
+    const width = ((end - start + 1) / maxM) * 100;
+    return `
+      <div class="gantt-row">
+        <div class="gantt-label">${esc(a[0])}<br><span style="color:var(--muted);font-weight:500;font-size:11px;">${esc(a[1])}</span></div>
+        <div class="gantt-track"><div class="gantt-bar" style="left:${left}%;width:${width}%;"></div></div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="chart-container" style="margin-top:0">
+      <div class="gantt-v5">
+        <div class="gantt-months" style="grid-template-columns:200px repeat(${quarters}, 1fr);">
+          <div style="text-align:left">Workstream</div>${headers}
+        </div>
+        ${rows}
+      </div>
+    </div>
+  `;
+}
+
+window.updateAct = function(idx, field, val) {
+  if (field === 3 || field === 4) val = Math.max(1, parseInt(val, 10) || 1);
+  DATA[current].activities[idx][field] = val;
+  const cont = document.getElementById('gantt-container');
+  if (cont) cont.innerHTML = svgGantt();
+};
+
+window.addAct = function() {
+  const maxM = Math.max(...DATA[current].activities.map(a => Math.max(a[3], a[4])), 0);
+  DATA[current].activities.push(["Nuova attività operativa", "Referente proposto", "Descrizione e output verificabile", Math.min(maxM + 1, 18), Math.min(maxM + 3, 18)]);
+  render();
+};
+
+window.delAct = function(idx) {
+  if (DATA[current].activities.length <= 1) return;
+  DATA[current].activities.splice(idx, 1);
+  render();
+};
+
+function tabOperative(d) {
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+      <div>
+        <span class="section-label">IMPLEMENTAZIONE · CRONOPROGRAMMA INTERATTIVO</span>
+        <h2 style="margin:0;">Piano di azioni e Gantt dinamico</h2>
+      </div>
+      <button class="btn small" onclick="addAct()">+ Aggiungi azione</button>
+    </div>
+
+    <div id="gantt-container">${svgGantt()}</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Attività</th>
+            <th>Responsabile</th>
+            <th>Come funziona e output</th>
+            <th style="width:155px;">Mesi (Da – A)</th>
+            <th style="width:42px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.activities.map((a, i) => `
+            <tr>
+              <td><input type="text" class="gantt-input" style="font-weight:700" value="${esc(a[0])}" oninput="updateAct(${i},0,this.value)"></td>
+              <td><input type="text" class="gantt-input" value="${esc(a[1])}" oninput="updateAct(${i},1,this.value)"></td>
+              <td><input type="text" class="gantt-input" value="${esc(a[2])}" oninput="updateAct(${i},2,this.value)"></td>
+              <td style="white-space:nowrap;">
+                <span style="font-weight:800;color:var(--brand)">M</span>
+                <input type="number" class="gantt-num" value="${a[3]}" min="1" max="36" oninput="updateAct(${i},3,this.value)">
+                <span>–</span>
+                <input type="number" class="gantt-num" value="${a[4]}" min="1" max="36" oninput="updateAct(${i},4,this.value)">
+              </td>
+              <td style="text-align:center;">
+                <button class="btn secondary small" style="border-color:transparent;background:transparent;font-size:17px;padding:2px 6px;" onclick="delAct(${i})" title="Elimina riga">×</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="four" style="margin-top:20px;">
+      ${[['M3','Baseline e bisogni validati'],['M6','Go / No-Go e avvio pilota'],['M12','Audit intermedio e correttivi'],['M18','Valutazione e sostenibilità']].map(x => `
+        <div class="inner"><span class="section-label">${x[0]}</span><h3 style="margin:0">${x[1]}</h3></div>
+      `).join('')}
+    </div>
+
+    <div class="two" style="margin-top:20px;">
+      <div class="inner">
+        <h3>Validazione partecipativa</h3>
+        <p>${esc(d.participatory)}</p>
+        <div class="badge" style="margin-top:12px;">La proposta viene revisionata dopo l'ascolto</div>
+      </div>
+      <div class="inner">
+        <h3>Rischi e mitigazioni</h3>
+        ${d.risks.map(r => `<div class="data-row"><span><b>${esc(r[0])}:</b> ${esc(r[1])}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// SCHEDA 4: PIATTAFORMA (SOSTITUISCE SOLO "RETE E GOVERNANCE")
+// ============================================================================
+function getHexPoints(cx, cy, r) {
+  const pts = [];
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    pts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
+  }
+  return pts.join(' ');
+}
+
+function wrapLabel(text, maxChars = 15) {
+  const words = String(text).trim().split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    if ((line + ' ' + w).trim().length <= maxChars) {
+      line = (line + ' ' + w).trim();
+    } else {
+      if (line) lines.push(line);
+      line = w.length > maxChars ? w.slice(0, maxChars - 1) + '…' : w;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.slice(0, 2);
+}
+
+function analyzePlatform(plat) {
+  let prodCount = 0;
+  let consCount = 0;
+  let prosumers = 0;
+  const producedSet = new Set();
+  const consumedSet = new Set();
+
+  plat.actors.forEach(a => {
+    const p = a.produces.filter(r => plat.resources.includes(r));
+    const c = a.consumes.filter(r => plat.resources.includes(r));
+    prodCount += p.length;
+    consCount += c.length;
+    if (p.length > 0 && c.length > 0) prosumers++;
+    p.forEach(r => producedSet.add(r));
+    c.forEach(r => consumedSet.add(r));
+  });
+
+  const unproduced = plat.resources.filter(r => !producedSet.has(r) && consumedSet.has(r));
+  const unconsumed = plat.resources.filter(r => producedSet.has(r) && !consumedSet.has(r));
+  return { prodCount, consCount, prosumers, unproduced, unconsumed };
+}
+
+function renderPlatformSVG() {
+  const plat = DATA[current].platform;
+  const W = 940, H = 540, cx = W / 2, cy = H / 2;
+
+  // Esagoni (Risorse) nel nucleo centrale
+  const resCount = Math.max(1, plat.resources.length);
+  const rRes = plat.resources.length <= 1 ? 0 : (plat.resources.length <= 4 ? 85 : 108);
+  const resPos = {};
+  plat.resources.forEach((res, i) => {
+    const angle = (i / resCount) * 2 * Math.PI - Math.PI / 2;
+    resPos[res] = {
+      x: cx + rRes * Math.cos(angle),
+      y: cy + rRes * Math.sin(angle)
+    };
+  });
+
+  // Cerchi (Stakeholder) sull'anello esterno
+  const actCount = Math.max(1, plat.actors.length);
+  const rxAct = 340, ryAct = 212;
+  const actPos = {};
+  plat.actors.forEach((act, i) => {
+    const angle = (i / actCount) * 2 * Math.PI - Math.PI / 2 + 0.25;
+    actPos[i] = {
+      x: cx + rxAct * Math.cos(angle),
+      y: cy + ryAct * Math.sin(angle)
+    };
+  });
+
+  const stats = analyzePlatform(plat);
+  const isNodeConnected = (type, id) => {
+    if (!hoveredPlatNode) return true;
+    if (hoveredPlatNode.type === type && hoveredPlatNode.id === id) return true;
+    if (hoveredPlatNode.type === 'actor' && type === 'res') {
+      const a = plat.actors[hoveredPlatNode.id];
+      return a && (a.produces.includes(id) || a.consumes.includes(id));
+    }
+    if (hoveredPlatNode.type === 'res' && type === 'actor') {
+      const a = plat.actors[id];
+      return a && (a.produces.includes(hoveredPlatNode.id) || a.consumes.includes(hoveredPlatNode.id));
+    }
+    return false;
+  };
+
+  let edgesHtml = '';
+  let animsHtml = '';
+
+  plat.actors.forEach((act, aIdx) => {
+    const pA = actPos[aIdx];
+
+    // Archi PRODUZIONE: Stakeholder (Cerchio) -> Risorsa (Esagono)
+    act.produces.forEach((res, rIdx) => {
+      const pR = resPos[res];
+      if (!pR) return;
+      const mx = (pA.x + pR.x) / 2;
+      const my = (pA.y + pR.y) / 2;
+      const dx = pR.x - pA.x, dy = pR.y - pA.y;
+      const len = Math.max(1, Math.hypot(dx, dy));
+      const nx = -dy / len, ny = dx / len;
+      const cpx = mx + nx * 24, cpy = my + ny * 24;
+
+      // Accorcia leggermente arrivo sull'esagono
+      const endX = pR.x - (dx / len) * 34;
+      const endY = pR.y - (dy / len) * 34;
+      const startX = pA.x + (dx / len) * 42;
+      const startY = pA.y + (dy / len) * 42;
+      const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
+
+      const active = !hoveredPlatNode ||
+        (hoveredPlatNode.type === 'actor' && hoveredPlatNode.id === aIdx) ||
+        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === res);
+      const cls = `plat-edge produce ${hoveredPlatNode ? (active ? 'highlighted' : 'dimmed') : ''}`;
+
+      edgesHtml += `<path d="${pathD}" class="${cls}" marker-end="url(#arrProd)"/>`;
+      if (active) {
+        const dur = (2.2 + ((aIdx + rIdx) % 3) * 0.45).toFixed(2);
+        animsHtml += `<circle r="4.2" fill="#b90d49"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
+      }
+    });
+
+    // Archi CONSUMO: Risorsa (Esagono) -> Stakeholder (Cerchio)
+    act.consumes.forEach((res, rIdx) => {
+      const pR = resPos[res];
+      if (!pR) return;
+      const mx = (pR.x + pA.x) / 2;
+      const my = (pR.y + pA.y) / 2;
+      const dx = pA.x - pR.x, dy = pA.y - pR.y;
+      const len = Math.max(1, Math.hypot(dx, dy));
+      const nx = -dy / len, ny = dx / len;
+      const cpx = mx + nx * 24, cpy = my + ny * 24;
+
+      const startX = pR.x + (dx / len) * 34;
+      const startY = pR.y + (dy / len) * 34;
+      const endX = pA.x - (dx / len) * 42;
+      const endY = pA.y - (dy / len) * 42;
+      const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
+
+      const active = !hoveredPlatNode ||
+        (hoveredPlatNode.type === 'actor' && hoveredPlatNode.id === aIdx) ||
+        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === res);
+      const cls = `plat-edge consume ${hoveredPlatNode ? (active ? 'highlighted' : 'dimmed') : ''}`;
+
+      edgesHtml += `<path d="${pathD}" class="${cls}" marker-end="url(#arrCons)"/>`;
+      if (active) {
+        const dur = (2.4 + ((aIdx + rIdx + 1) % 3) * 0.45).toFixed(2);
+        animsHtml += `<circle r="4.2" fill="#f0a527" stroke="#850032" stroke-width="1"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
+      }
+    });
+  });
+
+  // Disegno Esagoni (Risorse)
+  const hexNodesHtml = plat.resources.map(res => {
+    const p = resPos[res];
+    const lines = wrapLabel(res, 14);
+    const isOrphan = stats.unproduced.includes(res);
+    const dimmed = !isNodeConnected('res', res) ? 'dimmed' : '';
+    const textSvg = lines.length === 1
+      ? `<text x="${p.x}" y="${p.y + 4}" class="plat-lbl">${esc(lines[0])}</text>`
+      : `<text x="${p.x}" y="${p.y - 2}" class="plat-lbl">${esc(lines[0])}</text><text x="${p.x}" y="${p.y + 11}" class="plat-lbl">${esc(lines[1])}</text>`;
+    return `
+      <g class="plat-node ${dimmed}" onmouseenter="hoverPlat('res','${esc(res).replaceAll("'","\\'")}') " onmouseleave="hoverPlat(null,null)">
+        <polygon points="${getHexPoints(p.x, p.y, 36)}" class="plat-hex ${isOrphan?'orphan':''}"/>
+        ${textSvg}
+      </g>
+    `;
+  }).join('');
+
+  // Disegno Cerchi (Stakeholder)
+  const circleNodesHtml = plat.actors.map((act, idx) => {
+    const p = actPos[idx];
+    const lines = wrapLabel(act.name, 15);
+    const isProsumer = act.produces.length > 0 && act.consumes.length > 0;
+    const roleTxt = isProsumer ? 'PROSUMER' : (act.produces.length > 0 ? 'PRODUTTORE' : 'FRUITORE');
+    const dimmed = !isNodeConnected('actor', idx) ? 'dimmed' : '';
+    const textSvg = lines.length === 1
+      ? `<text x="${p.x}" y="${p.y + 2}" class="plat-lbl plat-actor-lbl">${esc(lines[0])}</text>`
+      : `<text x="${p.x}" y="${p.y - 4}" class="plat-lbl plat-actor-lbl">${esc(lines[0])}</text><text x="${p.x}" y="${p.y + 9}" class="plat-lbl plat-actor-lbl">${esc(lines[1])}</text>`;
+    return `
+      <g class="plat-node ${dimmed}" onmouseenter="hoverPlat('actor',${idx})" onmouseleave="hoverPlat(null,null)">
+        <circle cx="${p.x}" cy="${p.y}" r="43" class="plat-circle ${isProsumer?'prosumer':''}"/>
+        ${textSvg}
+        <text x="${p.x}" y="${p.y + 23}" class="plat-sub">${roleTxt}</text>
+      </g>
+    `;
+  }).join('');
+
+  return `
+    <svg class="platform-svg" viewBox="0 0 ${W} ${H}">
+      <defs>
+        <marker id="arrProd" orient="auto" markerWidth="7" markerHeight="7" refX="6" refY="3.5">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#b90d49"/>
+        </marker>
+        <marker id="arrCons" orient="auto" markerWidth="7" markerHeight="7" refX="6" refY="3.5">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#e08519"/>
+        </marker>
+      </defs>
+      <ellipse cx="${cx}" cy="${cy}" rx="340" ry="212" fill="none" stroke="#f0dde4" stroke-dasharray="5 5"/>
+      <circle cx="${cx}" cy="${cy}" r="145" fill="none" stroke="#f7e8c8" stroke-dasharray="4 4"/>
+      ${edgesHtml}
+      ${animsHtml}
+      ${hexNodesHtml}
+      ${circleNodesHtml}
+    </svg>
+  `;
+}
+
+function renderPlatformInspector() {
+  const plat = DATA[current].platform;
+  if (!hoveredPlatNode) {
+    return `<span style="color:var(--muted);">💡 Passa il cursore su un <b>cerchio</b> (stakeholder) o su un <b>esagono</b> (risorsa) per isolare i rispettivi flussi di produzione e consumo.</span>`;
+  }
+  if (hoveredPlatNode.type === 'actor') {
+    const a = plat.actors[hoveredPlatNode.id];
+    if (!a) return '';
+    return `
+      <div>
+        <strong style="color:var(--brand)">● ${esc(a.name)}</strong> ·
+        <span style="color:#850032"><b>Produce:</b> ${a.produces.length ? a.produces.map(esc).join(', ') : 'nessuna risorsa'}</span> ·
+        <span style="color:#9e5b08"><b>Consuma:</b> ${a.consumes.length ? a.consumes.map(esc).join(', ') : 'nessuna risorsa'}</span>
+      </div>
+    `;
+  }
+  const res = hoveredPlatNode.id;
+  const producers = plat.actors.filter(a => a.produces.includes(res)).map(a => a.name);
+  const consumers = plat.actors.filter(a => a.consumes.includes(res)).map(a => a.name);
+  return `
+    <div>
+      <strong style="color:#9e5b08">⬡ Risorsa: ${esc(res)}</strong> ·
+      <span style="color:#850032"><b>Prodotta da:</b> ${producers.length ? producers.map(esc).join(', ') : 'nessuno'}</span> ·
+      <span style="color:#29172a"><b>Consumata da:</b> ${consumers.length ? consumers.map(esc).join(', ') : 'nessuno'}</span>
+    </div>
+  `;
+}
+
+window.hoverPlat = function(type, id) {
+  hoveredPlatNode = type ? { type, id } : null;
+  const svgWrap = document.getElementById('platform-svg-wrap');
+  const insp = document.getElementById('platform-inspector');
+  if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
+  if (insp) insp.innerHTML = renderPlatformInspector();
+};
+
+window.addPlatformResource = function() {
+  const inp = document.getElementById('new-res-input');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const plat = DATA[current].platform;
+  if (!plat.resources.includes(val)) {
+    plat.resources.push(val);
+  }
+  inp.value = '';
+  render();
+};
+
+window.removePlatformResource = function(res) {
+  const plat = DATA[current].platform;
+  plat.resources = plat.resources.filter(r => r !== res);
+  plat.actors.forEach(a => {
+    a.produces = a.produces.filter(r => r !== res);
+    a.consumes = a.consumes.filter(r => r !== res);
+  });
+  render();
+};
+
+window.addPlatformActor = function() {
+  const plat = DATA[current].platform;
+  plat.actors.push({
+    name: `Nuovo attore ${plat.actors.length + 1}`,
+    produces: [],
+    consumes: []
+  });
+  render();
+};
+
+window.removePlatformActor = function(idx) {
+  const plat = DATA[current].platform;
+  if (plat.actors.length <= 1) return;
+  plat.actors.splice(idx, 1);
+  render();
+};
+
+window.renamePlatformActor = function(idx, val) {
+  DATA[current].platform.actors[idx].name = val;
+  const svgWrap = document.getElementById('platform-svg-wrap');
+  if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
+};
+
+window.toggleActorResource = function(actorIdx, direction, res) {
+  const arr = DATA[current].platform.actors[actorIdx][direction];
+  const pos = arr.indexOf(res);
+  if (pos >= 0) arr.splice(pos, 1);
+  else arr.push(res);
+  render();
+};
+
+window.quickAddActorResource = function(actorIdx, direction, inputId) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const plat = DATA[current].platform;
+  if (!plat.resources.includes(val)) plat.resources.push(val);
+  if (!plat.actors[actorIdx][direction].includes(val)) plat.actors[actorIdx][direction].push(val);
+  render();
+};
+
+function tabPlatform(d) {
+  const plat = d.platform;
+  const stats = analyzePlatform(plat);
+
+  const imbalanceNotice = stats.unproduced.length > 0
+    ? `<div class="note" style="margin:12px 0"><b>⚠️ Risorse richieste ma non ancora prodotte:</b> ${stats.unproduced.map(esc).join(', ')}. Assegna un attore produttore per chiudere il ciclo di piattaforma.</div>`
+    : stats.unconsumed.length > 0
+    ? `<div class="note" style="margin:12px 0"><b>ℹ️ Risorse immesse ma non ancora utilizzate:</b> ${stats.unconsumed.map(esc).join(', ')}.</div>`
+    : '';
+
+  return `
+    <span class="section-label">ECOSISTEMA DI PIATTAFORMA · SCAMBIO DI VALORE</span>
+    <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:14px;">
+      <div>
+        <h2 style="margin:0;">Attori, Prosumer e Flussi di Risorse</h2>
+        <p style="margin:4px 0 0;max-width:740px;">Modella l'intervento come ecosistema: ogni <b>stakeholder (cerchio)</b> può produrre e/o consumare <b>risorse (esagoni)</b> come dati, conoscenza, soldi, spazi, tempo o tecnologie.</p>
+      </div>
+    </div>
+
+    <div class="platform-kpis">
+      <div class="platform-kpi"><small>Stakeholder (Cerchi)</small><b>${plat.actors.length}</b><span>di cui <b>${stats.prosumers}</b> prosumer</span></div>
+      <div class="platform-kpi"><small>Risorse (Esagoni)</small><b>${plat.resources.length}</b><span>Unità di valore definite</span></div>
+      <div class="platform-kpi"><small>Flussi Produzione</small><b>${stats.prodCount}</b><span>Cerchio → Esagono</span></div>
+      <div class="platform-kpi"><small>Flussi Consumo</small><b>${stats.consCount}</b><span>Esagono → Cerchio</span></div>
+    </div>
+
+    ${imbalanceNotice}
+
+    <div class="platform-stage">
+      <div class="platform-inspector" id="platform-inspector">${renderPlatformInspector()}</div>
+      <div id="platform-svg-wrap">${renderPlatformSVG()}</div>
+      <div class="budget-legend" style="justify-content:center;margin-top:8px;">
+        <span><i style="background:#fdebf1;border:2px solid #b90d49;border-radius:50%"></i>Cerchio = Stakeholder / Prosumer</span>
+        <span><i style="background:#fff3dc;border:2px solid #f0a527"></i>Esagono = Risorsa scambiata</span>
+        <span><i style="background:#b90d49"></i>Flusso continuo = Produzione (Attore → Risorsa)</span>
+        <span><i style="background:#f0a527"></i>Flusso tratteggiato = Consumo (Risorsa → Attore)</span>
+      </div>
+    </div>
+
+    <div class="platform-builder">
+      <!-- Colonna 1: Risorse libere (Esagoni) -->
+      <div class="inner">
+        <h3 style="color:#8a5308;">⬡ Risorse della piattaforma (Esagoni)</h3>
+        <p style="font-size:12.5px;margin-bottom:12px;">Definisci liberamente qualsiasi risorsa materiale o immateriale scambiata nella rete (dati, conoscenza, soldi, spazi, tempo, tecnologie...).</p>
+        <div style="display:flex;gap:8px;">
+          <input id="new-res-input" type="text" class="edit-input" placeholder="Es. Conoscenza, Soldi, Tecnologie..." onkeydown="if(event.key==='Enter')addPlatformResource()">
+          <button class="btn small" onclick="addPlatformResource()">+ Aggiungi</button>
+        </div>
+        <div class="res-pill-list">
+          ${plat.resources.map(res => `
+            <span class="res-pill">
+              ⬡ ${esc(res)}
+              <button onclick="removePlatformResource('${esc(res).replaceAll("'","\\'")}') " title="Elimina risorsa">×</button>
+            </span>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Colonna 2: Stakeholder / Prosumer (Cerchi) -->
+      <div class="inner" style="background:#fff;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
+          <h3 style="color:var(--brand);margin:0;">● Attori e Stakeholder (Cerchi)</h3>
+          <button class="btn small" onclick="addPlatformActor()">+ Aggiungi stakeholder</button>
+        </div>
+
+        ${plat.actors.map((act, idx) => {
+          const isProsumer = act.produces.length > 0 && act.consumes.length > 0;
+          const badgeClass = isProsumer ? 'role-prosumer' : (act.produces.length > 0 ? 'role-producer' : 'role-consumer');
+          const badgeLabel = isProsumer ? 'Prosumer' : (act.produces.length > 0 ? 'Produttore' : 'Fruitore');
+          return `
+            <div class="actor-card">
+              <div class="actor-card-head">
+                <input type="text" class="edit-input" style="font-weight:800;font-size:14px;max-width:62%;" value="${esc(act.name)}" oninput="renamePlatformActor(${idx}, this.value)">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="role-badge ${badgeClass}">${badgeLabel}</span>
+                  <button class="btn secondary small" style="padding:4px 8px;" onclick="removePlatformActor(${idx})" title="Rimuovi attore">×</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom:10px;">
+                <div style="font-size:11px;font-weight:800;color:#850032;text-transform:uppercase;letter-spacing:.05em;">Produce / Immette (Cerchio → Esagono):</div>
+                <div class="toggle-chips">
+                  ${plat.resources.map(res => {
+                    const active = act.produces.includes(res);
+                    return `<button class="t-chip ${active?'on-prod':''}" onclick="toggleActorResource(${idx},'produces','${esc(res).replaceAll("'","\\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
+                  }).join('')}
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:11px;font-weight:800;color:#9e5b08;text-transform:uppercase;letter-spacing:.05em;">Consuma / Preleva (Esagono → Cerchio):</div>
+                <div class="toggle-chips">
+                  ${plat.resources.map(res => {
+                    const active = act.consumes.includes(res);
+                    return `<button class="t-chip ${active?'on-cons':''}" onclick="toggleActorResource(${idx},'consumes','${esc(res).replaceAll("'","\\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// SCHEDA 5: CAMPAGNA E CO-DESIGN
+// ============================================================================
+function tabCampaign(d) {
+  const c = d.campaign;
+  return `
+    <span class="section-label">FASE 2 · COMUNICAZIONE DI COMUNITÀ</span>
+    <h2>Dare voce a una proposta di comunità</h2>
+    <p>Prototipo di campagna multicanale con messaggi calibrati per ciascun target. Da testare con gli utenti nel laboratorio partecipativo.</p>
+    <div class="two">
+      <div class="campaign-poster">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.14em;color:#ffe6c2;">GENERAZIONI SIMM · ${esc(d.tag)}</div>
+        <div>
+          <h2>${esc(c.slogan)}</h2>
+          <p>${esc(c.body)}</p>
+        </div>
+        <div style="font-size:12px;color:#fffd;">
+          ${esc(c.cta)}<br>
+          <b>Prototipo illustrativo · non comunicazione istituzionale</b>
+        </div>
+      </div>
+      <div>
+        <h3>Messaggi differenziati per destinatario</h3>
+        <div class="audience">
+          ${c.variants.map((v, i) => `<button class="${audience===i?'sel':''}" onclick="audience=${i};render()">${esc(v[0])}</button>`).join('')}
+        </div>
+        <div class="message-box">“${esc(c.variants[audience][1])}”</div>
+        <button class="btn secondary small" onclick="copyCampaign()">⧉ Copia messaggio</button>
+        <h3 style="margin-top:22px;">Canali territoriali proposti</h3>
+        <p>${esc(c.channels)}</p>
+      </div>
+    </div>
+    <div class="three" style="margin-top:22px;">
+      <div class="inner"><h3>Tono di voce</h3><p>Chiaro, rispettoso, inclusivo; mai colpevolizzante o allarmistico.</p></div>
+      <div class="inner"><h3>Accessibilità</h3><p>Versione stampa leggibile, testi brevi, alternative non digitali e mediazione linguistica.</p></div>
+      <div class="inner"><h3>Misura della campagna</h3><p>Reach dei canali, richieste informative, adesioni e differenze di accesso per area.</p></div>
+    </div>
+  `;
+}
+
+window.copyCampaign = function() {
+  const txt = DATA[current].campaign.variants[audience][1];
+  navigator.clipboard?.writeText(txt).then(() => alert('Messaggio copiato.')).catch(() => prompt('Copia il testo:', txt));
+};
+
+// ============================================================================
+// SCHEDA 6: METODO E FONTI
+// ============================================================================
+function sourceTile(s) {
+  return `
+    <article class="source-card">
+      <span style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--brand);">Materiale allegato · ${esc(s[1])}</span>
+      <h3 style="margin:6px 0">${esc(s[0])}</h3>
+      <p style="font-size:12.5px;margin:0">${esc(s[3])}</p>
+      <div class="source-actions">
+        <a href="${s[2]}" download>↓ Scarica</a>
+        <a href="${s[2]}" target="_blank" rel="noopener">↗ Apri file</a>
+      </div>
+    </article>
+  `;
+}
+
+function tabSources() {
+  const s = SOURCE_DOCS[current + 1];
+  return `
+    <span class="section-label">TRASPARENZA METODOLOGICA E FONTI</span>
+    <h2>Ogni numero ha bisogno della sua fonte</h2>
+    <p>Classificazione delle evidenze utilizzate nel laboratorio: distinzione tra dati documentali dei dossier e parametri simulati <b>[S]</b> per l'esercitazione.</p>
+
+    <div class="three" style="margin-bottom:22px;">
+      <div class="inner"><h3>01 · Dati documentali</h3><p>Residenti storici, parti 2024 e assetti organizzativi provengono dai tre dossier caricati per il workshop SIMM.</p></div>
+      <div class="inner"><h3>02 · Indicatori [S]</h3><p>Le prevalenze simulate (es. 29% valutazione post partum, 41% PDTA diabete, 29,4% solitudine) servono al confronto didattico e non descrivono l'epidemiologia reale.</p></div>
+      <div class="inner"><h3>03 · Simulatore e Piattaforma</h3><p>Formule di capacità, budget, cronoprogramma e flussi di piattaforma sono strumenti di co-progettazione da validare prima di qualsiasi attuazione.</p></div>
+    </div>
+
+    <div class="source-grid">
+      ${sourceTile(SOURCE_DOCS[0])}
+      ${sourceTile(s)}
+    </div>
+
+    <div class="note">⚑ Le risorse associative citate nei project work sono riportate come <b>attori presenti nella mappatura didattica</b>, non come partner già contrattualizzati.</div>
+  `;
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
