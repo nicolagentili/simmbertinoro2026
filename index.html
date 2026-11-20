@@ -576,6 +576,7 @@ const DATA = [
     ],
     participatory: "Due focus group con neomamme in aree centrali e isolate (anche da remoto), interviste a mediatori e operatori e un laboratorio di co-design con restituzione pubblica.",
     outcomes: ["Maggiore continuità dopo la dimissione", "Accesso più equo in aree periferiche", "Rete perinatale con percorsi espliciti"],
+    stakeholders: [["Neomamme e caregiver", "Co-designer e beneficiari", "Alta", "Coinvolgere"], ["Consultori, ostetriche, psicologi", "Regia clinica del percorso", "Alta", "Co-gestire"], ["MMG, PLS, punti nascita", "Identificazione e continuità", "Alta", "Integrare"], ["Comuni e servizi sociali", "Mobilità e inclusione", "Alta", "Accordo operativo"], ["Mamme in Montagna – APS", "Peer support (risorsa mappata)", "Media", "Co-progettare"], ["Centro Interculturale Ponti – APS", "Mediazione linguistica (mappata)", "Media", "Attivare"], ["Una Mano Vicina – ODV", "Accompagnamento (mappata)", "Media", "Convenzionare"]],
     platform: {
       resources: ["Dati di contatto", "Competenze cliniche", "Spazi di prossimità", "Tempo & Peer support", "Fondi & Trasporto", "Teleconsulenza"],
       actors: [
@@ -640,6 +641,7 @@ const DATA = [
     ],
     participatory: "World Café in due sedi, una a Pomezia e una ad Ardea, con persone inserite e non inserite in PDTA. Journey mapping dall’appuntamento alla refertazione.",
     outcomes: ["Più persone incluse nel PDTA", "Meno mancate visite", "Riduzione delle disuguaglianze tra comuni"],
+    stakeholders: [["Persone con diabete e caregiver", "Co-design e valutazione", "Alta", "Co-progettare"], ["Distretto H4 e diabetologia", "Clinical owner", "Alta", "Guidare"], ["MMG e infermieri di comunità", "Richiamo e continuità", "Alta", "Coordinare"], ["Farmacie e servizi sociali", "Orientamento accessibile", "Media", "Attivare"], ["Diabete Insieme – APS", "Peer education (risorsa mappata)", "Media", "Co-gestire"], ["Rete Solidale Ardea – ODV", "Accompagnamento (mappata)", "Media", "Convenzionare"], ["Centro Interculturale Pontino – APS", "Mediazione (mappata)", "Media", "Attivare"]],
     platform: {
       resources: ["Dati clinici & Referti", "Piani di cura PDTA", "Sistema Recall", "Spazi prossimità Ardea", "Educazione & Peer", "Fondi & Logistica"],
       actors: [
@@ -703,6 +705,7 @@ const DATA = [
     ],
     participatory: "Sette micro-laboratori territoriali con anziani, caregiver, enti locali e volontari, più incontri domiciliari su consenso per persone difficili da raggiungere.",
     outcomes: ["Reti relazionali più accessibili", "Individuazione precoce dei bisogni", "Collaborazione strutturata fra servizi ed ETS"],
+    stakeholders: [["Persone anziane e caregiver", "Co-design e valutazione", "Alta", "Coinvolgere"], ["Distretto 40, PUA, CdC, COT", "Raccordo sociosanitario", "Alta", "Integrare"], ["Sette comuni e servizi sociali", "Regia sociale e trasporti", "Alta", "Coordinare"], ["MMG e assistenza domiciliare", "Segnalazione e bisogno clinico", "Alta", "Collaborare"], ["Auser Corleone – APS", "Compagnia e trasporto (mappata)", "Media", "Co-gestire"], ["Insieme per Giuliana – ODV", "Visite di prossimità (mappata)", "Media", "Attivare"], ["Circolo Anziani Bisacquino", "Socialità (risorsa mappata)", "Media", "Attivare"]],
     platform: {
       resources: ["Segnalazioni bisogni", "Tempo volontari", "Trasporto solidale", "Spazi aggregazione", "Fondi microprogetti", "Presa in carico PUA"],
       actors: [
@@ -797,7 +800,7 @@ const SOURCE_DOCS = [
 ];
 
 let current = 0;
-let tab = 'overview';
+let tab = 'abstract';
 let audience = 0;
 let scenarios = [];
 let territorySel = [];
@@ -830,7 +833,7 @@ function renderCards() {
   `).join('');
 }
 
-function openProject(i, targetTab='overview') {
+function openProject(i, targetTab='abstract') {
   current = i;
   tab = targetTab;
   audience = 0;
@@ -850,12 +853,14 @@ function setTab(t) {
 
 // --- LE 6 SCHEDE (SOSTITUITA SOLO "RETE E GOVERNANCE" CON "PIATTAFORMA") ---
 const TABS = [
-  { id:'overview', name:'1 · Profilo e Obiettivi', fn: tabOverview },
-  { id:'simulatore', name:'2 · Atlante e Simulatore', fn: tabSimulator },
-  { id:'operativo', name:'3 · Piano Operativo', fn: tabOperative },
-  { id:'piattaforma', name:'4 · Piattaforma', fn: tabPlatform },
-  { id:'campagna', name:'5 · Campagna e Co-design', fn: tabCampaign },
-  { id:'fonti', name:'6 · Metodo e Fonti', fn: tabSources }
+  { id:'abstract', name:'1 · Abstract', fn: tabAbstract },
+  { id:'salute', name:'2 · Profilo di salute', fn: tabSalute },
+  { id:'sociale', name:'3 · Capitale sociale', fn: tabSociale },
+  { id:'simulatore', name:'4 · Atlante e Simulatore', fn: tabSimulator },
+  { id:'operativo', name:'5 · Piano Operativo', fn: tabOperative },
+  { id:'piattaforma', name:'6 · Piattaforma', fn: tabPlatform },
+  { id:'campagna', name:'7 · Campagna e Co-design', fn: tabCampaign },
+  { id:'fonti', name:'8 · Fonti', fn: tabSources }
 ];
 
 function render() {
@@ -908,42 +913,93 @@ function svgDumbbell(indicators) {
   `;
 }
 
-function tabOverview(d) {
+function tabAbstract(d) {
   return `
-    <span class="section-label">DIAGNOSI DI COMUNITÀ E QUADRO LOGICO</span>
+    <span class="section-label">ABSTRACT DEL PROGETTO</span>
     <div class="two">
       <div>
-        <h2>Il bisogno, prima della soluzione.</h2>
+        <h2>Razionale e Obiettivi</h2>
         <p style="font-size:17px; color:var(--ink); font-weight:500;">${esc(d.need)}</p>
         <div class="inner" style="margin-top:18px;">
-          <h3>Obiettivo specifico</h3>
+          <h3 style="color:var(--brand)">Obiettivo generale</h3>
           <p>${esc(d.goal)}</p>
           <h3 style="margin-top:16px;">Destinatari prioritari</h3>
           <p>${esc(d.pop)}</p>
         </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:10px;">Obiettivi Specifici (Teoria del Cambiamento)</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${d.objectives.map(o => `<div class="inner"><h3 style="color:var(--brand);margin:0 0 6px 0">${esc(o[0])}</h3><p style="margin:0">${esc(o[1])}</p></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function tabSalute(d) {
+  return `
+    <span class="section-label">PROFILO DI SALUTE E QUADRO LOGICO</span>
+    <div class="two">
+      <div>
+        <h2>Indicatori e Baseline</h2>
+        <p>Quadro epidemiologico e sociale di partenza. I valori <b>[S] / simulato</b> sono stime didattiche.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Indicatore / Variabile</th><th>Valore</th><th>Fonte</th></tr></thead>
+            <tbody>
+              ${d.baseline.map(([a,b,c]) => `<tr><td><b>${esc(a)}</b></td><td><span style="color:var(--accent);font-weight:800">${esc(b)}</span></td><td>${esc(c)}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
         <div class="inner" style="margin-top:16px;">
-          <h3>Indicatori del dossier</h3>
-          ${d.baseline.map(([a,b,c]) => `<div class="data-row"><span>${esc(a)} <small style="color:#8d7982">· ${c}</small></span><b>${esc(b)}</b></div>`).join('')}
+          <h3>Fonti di verifica per i KPI di progetto</h3>
+          ${d.indicators.map(ind => `<div class="data-row"><span>${esc(ind.label)}</span><b>${esc(ind.source)}</b></div>`).join('')}
         </div>
       </div>
       <div>
         <h3 style="margin-bottom:10px;">Scostamento atteso: Baseline → Target</h3>
         ${svgDumbbell(d.indicators)}
+      </div>
+    </div>
+  `;
+}
+
+function tabSociale(d) {
+  return `
+    <span class="section-label">CAPITALE SOCIALE E ASSET MAPPATI</span>
+    <div class="two">
+      <div>
+        <h2>La rete degli attori locali</h2>
+        <p>Mappatura degli stakeholder, enti del terzo settore (ETS) e risorse istituzionali o informali presenti sul territorio, fondamentali per abilitare il modello a piattaforma.</p>
+        <div class="table-wrap" style="margin-top:16px;">
+          <table>
+            <thead><tr><th>Attore / Risorsa</th><th>Ruolo potenziale</th><th>Impatto</th><th>Strategia</th></tr></thead>
+            <tbody>
+              ${(d.stakeholders || []).map(s => `<tr><td><b>${esc(s[0])}</b></td><td>${esc(s[1])}</td><td><span class="pill" style="padding:4px 8px; font-size:10px;">${esc(s[2])}</span></td><td><b>${esc(s[3] || '')}</b></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="inner" style="margin-bottom:16px; background:#fff3f7; border-color:#ecd7e0;">
+          <h3 style="color:#b90d49">Validazione partecipativa e Co-design</h3>
+          <p>${esc(d.participatory)}</p>
+          <div class="badge" style="margin-top:12px; background:#fff; border:1px solid #ecd7e0; color:#b90d49;">Fase di ascolto della comunità integrata</div>
+        </div>
         <div class="inner">
-          <h3>Fonti di verifica KPI</h3>
-          ${d.indicators.map(ind => `<div class="data-row"><span>${esc(ind.label)}</span><b>${esc(ind.source)}</b></div>`).join('')}
+          <h3 style="color:#f0a527">Classificazione Risorse Mappate</h3>
+          <ul class="list-clean">
+            <li><b>Sanità e Sociale:</b> Servizi distrettuali, PUA, ambulatori, MMG, PLS, infermieri di comunità.</li>
+            <li><b>Terzo Settore:</b> Rete del volontariato, associazioni pazienti, cooperative, mediatori culturali.</li>
+            <li><b>Comunità informale:</b> Spazi aggregativi, reti di vicinato, parrocchie, farmacie rurali.</li>
+          </ul>
         </div>
       </div>
     </div>
-    <div style="margin-top:32px;">
-      <span class="section-label">TEORIA DEL CAMBIAMENTO</span>
-      <div class="objectives">
-        ${d.objectives.map(o => `<div class="objective"><h3>${esc(o[0])}</h3><p>${esc(o[1])}</p></div>`).join('')}
-      </div>
-    </div>
-    <div class="note">I valori riportati come <b>[S] / simulato</b> provengono dalle tabelle didattiche dei dossier. Prima dell'avvio reale occorre validare denominatori e registri locali.</div>
   `;
 }
+
 
 // ============================================================================
 // SCHEDA 2: ATLANTE E SIMULATORE
@@ -1451,15 +1507,10 @@ function tabOperative(d) {
       `).join('')}
     </div>
 
-    <div class="two" style="margin-top:20px;">
-      <div class="inner">
-        <h3>Validazione partecipativa</h3>
-        <p>${esc(d.participatory)}</p>
-        <div class="badge" style="margin-top:12px;">La proposta viene revisionata dopo l'ascolto</div>
-      </div>
-      <div class="inner">
-        <h3>Rischi e mitigazioni</h3>
-        ${d.risks.map(r => `<div class="data-row"><span><b>${esc(r[0])}:</b> ${esc(r[1])}</span></div>`).join('')}
+    <div class="inner" style="margin-top:20px;">
+      <h3 style="color:var(--brand)">Rischi e mitigazioni</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        ${d.risks.map(r => `<div style="background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px;"><b>${esc(r[0])}</b><p style="margin:4px 0 0; font-size:12.5px;">${esc(r[1])}</p></div>`).join('')}
       </div>
     </div>
   `;
