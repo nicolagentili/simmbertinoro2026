@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GenerAzioni SIMM · Health Lab | DEMO Pianificatore Territoriale e Piattaforma</title>
+<title>GenerAzioni SIMM · Health Lab | Pianificatore Territoriale e Piattaforma</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 :root {
@@ -258,93 +258,168 @@ tr:last-child td { border-bottom:0; }
 .preset-btn { border:1px solid #e7cad5; background:#fff; border-radius:8px; padding:5px 10px; color:#7c2c48; font-size:11px; font-weight:800; }
 .preset-btn:hover { background:#fff3f7; border-color:var(--brand); }
 
-/* Piattaforma (Ecosystem Network SVG + Builder) */
-.platform-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
-.platform-kpi { background:#fffafc; border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
-.platform-kpi small { display:block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
-.platform-kpi b { display:block; font:800 24px/1.15 Manrope,sans-serif; color:var(--brand); margin-top:4px; }
-.platform-kpi span { font-size:11.5px; color:var(--muted); }
+/* Piattaforma (Split-Screen + Accordion + Drag & Drop SVG) */
+.platform-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:0 0 12px 0; }
+.platform-kpi { background:#fffafc; border:1px solid var(--line); border-radius:12px; padding:10px 14px; }
+.platform-kpi small { display:block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); }
+.platform-kpi b { display:block; font:800 21px/1.15 Manrope,sans-serif; color:var(--brand); margin-top:2px; }
+.platform-kpi span { font-size:11px; color:var(--muted); }
 
+.platform-layout {
+  display:grid;
+  grid-template-columns:390px minmax(0, 1fr);
+  gap:20px;
+  height:660px;
+  max-height:calc(100vh - 155px);
+  min-height:560px;
+  align-items:stretch;
+  margin-top:14px;
+}
+.platform-sidebar {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  height:100%;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding-right:6px;
+}
+.platform-sidebar::-webkit-scrollbar { width:6px; }
+.platform-sidebar::-webkit-scrollbar-track { background:#faf0f4; border-radius:4px; }
+.platform-sidebar::-webkit-scrollbar-thumb { background:#d4b3c0; border-radius:4px; }
+.platform-sidebar::-webkit-scrollbar-thumb:hover { background:var(--brand); }
+
+.plat-accordion {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:visible;
+  flex-shrink:0;
+}
+.plat-accordion summary {
+  background:#fffafc;
+  padding:13px 16px;
+  font-family:Manrope,sans-serif;
+  font-weight:800;
+  font-size:14px;
+  color:var(--brand);
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-radius:14px;
+  user-select:none;
+}
+.plat-accordion summary::-webkit-details-marker { display:none; }
+.plat-accordion summary::after { content:'+'; font-size:18px; line-height:1; color:var(--brand); }
+.plat-accordion[open] summary::after { content:'−'; }
+.plat-accordion[open] summary { border-bottom:1px solid var(--line); border-radius:14px 14px 0 0; }
+.accordion-body { padding:14px 16px; background:#fff; border-radius:0 0 14px 14px; }
+
+.platform-main {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-width:0;
+}
 .platform-stage {
+  flex:1;
+  display:flex;
+  flex-direction:column;
   background:radial-gradient(circle at 50% 50%, #fff 0%, #fff7fa 100%);
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:16px;
+  border-radius:18px;
+  padding:14px;
   position:relative;
-  margin-top:12px;
+  min-height:0;
 }
 .platform-inspector {
   display:flex;
   justify-content:space-between;
   align-items:center;
   flex-wrap:wrap;
-  gap:10px;
-  padding:10px 14px;
+  gap:8px;
+  padding:9px 13px;
   background:#fff;
   border:1px solid var(--line);
-  border-radius:12px;
-  font-size:12.5px;
-  margin-bottom:10px;
-  min-height:44px;
+  border-radius:11px;
+  font-size:12px;
+  margin-bottom:8px;
+  min-height:40px;
+  flex-shrink:0;
 }
-.platform-svg { width:100%; height:540px; display:block; }
-.plat-node { cursor:pointer; transition:opacity .25s; }
+#platform-svg-wrap {
+  flex:1;
+  position:relative;
+  min-height:0;
+  width:100%;
+}
+.platform-svg {
+  width:100%;
+  height:100%;
+  display:block;
+  touch-action:none;
+  user-select:none;
+}
+.plat-node { cursor:grab; transition:opacity .2s; }
+.plat-node:active, .plat-node.dragging { cursor:grabbing; }
 .plat-node.dimmed { opacity:0.22; }
-.plat-edge { fill:none; transition:opacity .25s, stroke-width .25s; }
+.plat-edge { fill:none; transition:opacity .2s, stroke-width .2s; pointer-events:none; }
 .plat-edge.dimmed { opacity:0.1; }
-.plat-edge.produce { stroke:#b90d49; stroke-width:2.2; stroke-opacity:0.78; }
-.plat-edge.consume { stroke:#e08519; stroke-width:2.2; stroke-opacity:0.85; stroke-dasharray:5 3; }
+.plat-edge.produce { stroke:#b90d49; stroke-width:2.2; stroke-opacity:0.8; }
+.plat-edge.consume { stroke:#e08519; stroke-width:2.2; stroke-opacity:0.88; stroke-dasharray:5 3; }
 .plat-edge.highlighted { stroke-width:3.4; stroke-opacity:1; }
-.plat-circle { fill:#fdebf1; stroke:#b90d49; stroke-width:2.5; transition:all .2s; }
+.plat-circle { fill:#fdebf1; stroke:#b90d49; stroke-width:2.5; transition:fill .15s; }
 .plat-circle.prosumer { fill:#fff0f5; stroke:#850032; stroke-width:3.2; }
-.plat-node:hover .plat-circle { fill:#b90d49; }
-.plat-node:hover .plat-circle + text, .plat-node:hover .plat-actor-lbl { fill:#fff !important; }
-.plat-hex { fill:#fff3dc; stroke:#f0a527; stroke-width:2.5; transition:all .2s; }
+.plat-node:hover .plat-circle, .plat-node.dragging .plat-circle { fill:#b90d49; }
+.plat-node:hover .plat-actor-lbl, .plat-node.dragging .plat-actor-lbl { fill:#fff !important; }
+.plat-node:hover .plat-sub, .plat-node.dragging .plat-sub { fill:#ffe1e8 !important; }
+.plat-hex { fill:#fff3dc; stroke:#f0a527; stroke-width:2.5; transition:fill .15s; }
 .plat-hex.orphan { fill:#fff0f0; stroke:#d93838; stroke-dasharray:4 2; }
-.plat-node:hover .plat-hex { fill:#f0a527; }
+.plat-node:hover .plat-hex, .plat-node.dragging .plat-hex { fill:#f0a527; }
 .plat-lbl { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:800; fill:#29172a; text-anchor:middle; pointer-events:none; }
 .plat-sub { font-family:'DM Sans',sans-serif; font-size:9px; font-weight:800; fill:#8d6473; text-anchor:middle; text-transform:uppercase; letter-spacing:.06em; pointer-events:none; }
 
-.platform-builder { display:grid; grid-template-columns:1fr 1.65fr; gap:22px; margin-top:22px; align-items:start; }
-.res-pill-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+.res-pill-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .res-pill {
   display:inline-flex;
   align-items:center;
-  gap:6px;
-  padding:6px 11px;
+  gap:5px;
+  padding:5px 10px;
   background:#fff3dc;
   border:1px solid #f0a527;
   border-radius:8px;
-  font-size:12px;
+  font-size:11.5px;
   font-weight:800;
   color:#6e470b;
 }
 .res-pill button { border:0; background:transparent; color:#850032; font-weight:900; padding:0 2px; font-size:14px; line-height:1; }
 .actor-card {
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:15px 16px;
+  border-radius:12px;
+  padding:12px 13px;
   background:#fffafc;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
-.actor-card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
-.role-badge { padding:4px 10px; border-radius:999px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+.actor-card:last-child { margin-bottom:0; }
+.actor-card-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; }
+.role-badge { padding:3px 9px; border-radius:999px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; white-space:nowrap; }
 .role-prosumer { background:#fdebf1; color:#850032; border:1px solid #e6b4c7; }
 .role-producer { background:#fff3dc; color:#8a5308; border:1px solid #f0c987; }
 .role-consumer { background:#f3eef1; color:#5e4955; border:1px solid #d9ccd3; }
-.toggle-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.toggle-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:5px; }
 .t-chip {
   border:1px solid #e3cfd7;
   background:#fff;
   color:#6e5b64;
   border-radius:999px;
-  padding:4px 10px;
-  font-size:11.5px;
+  padding:3px 9px;
+  font-size:11px;
   font-weight:700;
 }
 .t-chip.on-prod { background:#b90d49; color:#fff; border-color:#b90d49; }
 .t-chip.on-cons { background:#f0a527; color:#29172a; border-color:#d98e14; }
-
 /* Campaign & Sources */
 .campaign-poster { background:linear-gradient(142deg,#850032,#b90d49 70%,#d96b27); color:white; min-height:300px; border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; }
 .campaign-poster h2 { font-size:34px; color:white; }
@@ -362,7 +437,9 @@ tr:last-child td { border-bottom:0; }
 .footer p { color:#f8dce8; margin:6px 0 0; }
 
 @media(max-width:980px){
-  .hero, .two, .sim-layout, .platform-builder { grid-template-columns:1fr; }
+  .hero, .two, .sim-layout, .platform-layout { grid-template-columns:1fr; height:auto; max-height:none; }
+  .platform-sidebar { max-height:420px; }
+  .platform-main { height:580px; }
   .stats, .project-grid, .three, .objectives, .platform-kpis, .sim-kpis { grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); }
   .gantt-row { grid-template-columns:1fr; gap:6px; }
   .gantt-months { display:none!important; }
@@ -1416,6 +1493,138 @@ function wrapLabel(text, maxChars = 15) {
   return lines.slice(0, 2);
 }
 
+function initPlatformPositions(forceReset = false) {
+  const p = DATA[current].platform;
+  if (!p.positions || forceReset) {
+    p.positions = { actors: {}, resources: {} };
+  }
+  const W = 940, H = 540, cx = W / 2, cy = H / 2;
+
+  const resCount = Math.max(1, p.resources.length);
+  const rRes = p.resources.length <= 1 ? 0 : (p.resources.length <= 4 ? 85 : 108);
+  p.resources.forEach((res, i) => {
+    if (!p.positions.resources[res]) {
+      const angle = (i / resCount) * 2 * Math.PI - Math.PI / 2;
+      p.positions.resources[res] = {
+        x: cx + rRes * Math.cos(angle),
+        y: cy + rRes * Math.sin(angle)
+      };
+    }
+  });
+
+  const actCount = Math.max(1, p.actors.length);
+  const rxAct = 340, ryAct = 212;
+  p.actors.forEach((act, i) => {
+    if (!p.positions.actors[act.name]) {
+      const angle = (i / actCount) * 2 * Math.PI - Math.PI / 2 + 0.25;
+      p.positions.actors[act.name] = {
+        x: cx + rxAct * Math.cos(angle),
+        y: cy + ryAct * Math.sin(angle)
+      };
+    }
+  });
+
+  Object.keys(p.positions.resources).forEach(k => {
+    if (!p.resources.includes(k)) delete p.positions.resources[k];
+  });
+  const actNames = p.actors.map(a => a.name);
+  Object.keys(p.positions.actors).forEach(k => {
+    if (!actNames.includes(k)) delete p.positions.actors[k];
+  });
+}
+
+let draggingNode = null;
+let dragOffset = { x: 0, y: 0 };
+let dragRAF = null;
+
+function clientToSvgCoords(svg, clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+  if (!rect.width || !rect.height) return { x: 470, y: 270 };
+  const vb = svg.viewBox.baseVal;
+  const vbW = vb && vb.width ? vb.width : 940;
+  const vbH = vb && vb.height ? vb.height : 540;
+  const scale = Math.min(rect.width / vbW, rect.height / vbH);
+  const renderedW = vbW * scale;
+  const renderedH = vbH * scale;
+  const offsetX = rect.left + (rect.width - renderedW) / 2;
+  const offsetY = rect.top + (rect.height - renderedH) / 2;
+  return {
+    x: (clientX - offsetX) / scale,
+    y: (clientY - offsetY) / scale
+  };
+}
+
+window.startDrag = function(e, type, idx) {
+  if (e.button !== undefined && e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const svg = document.querySelector('.platform-svg');
+  if (!svg) return;
+
+  initPlatformPositions();
+  const p = DATA[current].platform;
+  const key = type === 'actor' ? (p.actors[idx] && p.actors[idx].name) : p.resources[idx];
+  const nodePos = type === 'actor' ? p.positions.actors[key] : p.positions.resources[key];
+  if (!nodePos) return;
+
+  const svgP = clientToSvgCoords(svg, e.clientX, e.clientY);
+  draggingNode = { type, idx, key };
+  hoveredPlatNode = { type, id: idx };
+  dragOffset = { x: svgP.x - nodePos.x, y: svgP.y - nodePos.y };
+
+  window.addEventListener('pointermove', onDragMove);
+  window.addEventListener('pointerup', onDragEnd);
+  window.addEventListener('mousemove', onDragMove);
+  window.addEventListener('mouseup', onDragEnd);
+};
+
+function onDragMove(e) {
+  if (!draggingNode) return;
+  if (dragRAF) cancelAnimationFrame(dragRAF);
+  const clientX = e.clientX;
+  const clientY = e.clientY;
+  dragRAF = requestAnimationFrame(() => {
+    if (!draggingNode) return;
+    const svg = document.querySelector('.platform-svg');
+    if (!svg) return;
+    const svgP = clientToSvgCoords(svg, clientX, clientY);
+    const p = DATA[current].platform;
+    const target = draggingNode.type === 'actor'
+      ? p.positions.actors[draggingNode.key]
+      : p.positions.resources[draggingNode.key];
+    if (target) {
+      target.x = clamp(svgP.x - dragOffset.x, 52, 888);
+      target.y = clamp(svgP.y - dragOffset.y, 52, 488);
+      const svgWrap = document.getElementById('platform-svg-wrap');
+      if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
+    }
+  });
+}
+
+function onDragEnd() {
+  if (!draggingNode) return;
+  draggingNode = null;
+  if (dragRAF) {
+    cancelAnimationFrame(dragRAF);
+    dragRAF = null;
+  }
+  window.removeEventListener('pointermove', onDragMove);
+  window.removeEventListener('pointerup', onDragEnd);
+  window.removeEventListener('mousemove', onDragMove);
+  window.removeEventListener('mouseup', onDragEnd);
+  const svgWrap = document.getElementById('platform-svg-wrap');
+  if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
+}
+
+window.resetPlatformLayout = function() {
+  initPlatformPositions(true);
+  hoveredPlatNode = null;
+  const svgWrap = document.getElementById('platform-svg-wrap');
+  const insp = document.getElementById('platform-inspector');
+  if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
+  if (insp) insp.innerHTML = renderPlatformInspector();
+};
+
 function analyzePlatform(plat) {
   let prodCount = 0;
   let consCount = 0;
@@ -1442,28 +1651,11 @@ function renderPlatformSVG() {
   const plat = DATA[current].platform;
   const W = 940, H = 540, cx = W / 2, cy = H / 2;
 
-  // Esagoni (Risorse) nel nucleo centrale
-  const resCount = Math.max(1, plat.resources.length);
-  const rRes = plat.resources.length <= 1 ? 0 : (plat.resources.length <= 4 ? 85 : 108);
-  const resPos = {};
-  plat.resources.forEach((res, i) => {
-    const angle = (i / resCount) * 2 * Math.PI - Math.PI / 2;
-    resPos[res] = {
-      x: cx + rRes * Math.cos(angle),
-      y: cy + rRes * Math.sin(angle)
-    };
-  });
-
-  // Cerchi (Stakeholder) sull'anello esterno
-  const actCount = Math.max(1, plat.actors.length);
-  const rxAct = 340, ryAct = 212;
+  initPlatformPositions();
+  const resPos = plat.positions.resources;
   const actPos = {};
   plat.actors.forEach((act, i) => {
-    const angle = (i / actCount) * 2 * Math.PI - Math.PI / 2 + 0.25;
-    actPos[i] = {
-      x: cx + rxAct * Math.cos(angle),
-      y: cy + ryAct * Math.sin(angle)
-    };
+    actPos[i] = plat.positions.actors[act.name];
   });
 
   const stats = analyzePlatform(plat);
@@ -1472,11 +1664,13 @@ function renderPlatformSVG() {
     if (hoveredPlatNode.type === type && hoveredPlatNode.id === id) return true;
     if (hoveredPlatNode.type === 'actor' && type === 'res') {
       const a = plat.actors[hoveredPlatNode.id];
-      return a && (a.produces.includes(id) || a.consumes.includes(id));
+      const resName = plat.resources[id];
+      return a && (a.produces.includes(resName) || a.consumes.includes(resName));
     }
     if (hoveredPlatNode.type === 'res' && type === 'actor') {
       const a = plat.actors[id];
-      return a && (a.produces.includes(hoveredPlatNode.id) || a.consumes.includes(hoveredPlatNode.id));
+      const resName = plat.resources[hoveredPlatNode.id];
+      return a && (a.produces.includes(resName) || a.consumes.includes(resName));
     }
     return false;
   };
@@ -1486,6 +1680,7 @@ function renderPlatformSVG() {
 
   plat.actors.forEach((act, aIdx) => {
     const pA = actPos[aIdx];
+    if (!pA) return;
 
     // Archi PRODUZIONE: Stakeholder (Cerchio) -> Risorsa (Esagono)
     act.produces.forEach((res, rIdx) => {
@@ -1498,22 +1693,22 @@ function renderPlatformSVG() {
       const nx = -dy / len, ny = dx / len;
       const cpx = mx + nx * 24, cpy = my + ny * 24;
 
-      // Accorcia leggermente arrivo sull'esagono
       const endX = pR.x - (dx / len) * 34;
       const endY = pR.y - (dy / len) * 34;
       const startX = pA.x + (dx / len) * 42;
       const startY = pA.y + (dy / len) * 42;
       const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
 
+      const resIdx = plat.resources.indexOf(res);
       const active = !hoveredPlatNode ||
         (hoveredPlatNode.type === 'actor' && hoveredPlatNode.id === aIdx) ||
-        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === res);
+        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === resIdx);
       const cls = `plat-edge produce ${hoveredPlatNode ? (active ? 'highlighted' : 'dimmed') : ''}`;
 
       edgesHtml += `<path d="${pathD}" class="${cls}" marker-end="url(#arrProd)"/>`;
       if (active) {
         const dur = (2.2 + ((aIdx + rIdx) % 3) * 0.45).toFixed(2);
-        animsHtml += `<circle r="4.2" fill="#b90d49"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
+        animsHtml += `<circle r="4.2" fill="#b90d49" style="pointer-events:none"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
       }
     });
 
@@ -1534,30 +1729,33 @@ function renderPlatformSVG() {
       const endY = pA.y - (dy / len) * 42;
       const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
 
+      const resIdx = plat.resources.indexOf(res);
       const active = !hoveredPlatNode ||
         (hoveredPlatNode.type === 'actor' && hoveredPlatNode.id === aIdx) ||
-        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === res);
+        (hoveredPlatNode.type === 'res' && hoveredPlatNode.id === resIdx);
       const cls = `plat-edge consume ${hoveredPlatNode ? (active ? 'highlighted' : 'dimmed') : ''}`;
 
       edgesHtml += `<path d="${pathD}" class="${cls}" marker-end="url(#arrCons)"/>`;
       if (active) {
         const dur = (2.4 + ((aIdx + rIdx + 1) % 3) * 0.45).toFixed(2);
-        animsHtml += `<circle r="4.2" fill="#f0a527" stroke="#850032" stroke-width="1"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
+        animsHtml += `<circle r="4.2" fill="#f0a527" stroke="#850032" stroke-width="1" style="pointer-events:none"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${pathD}"/></circle>`;
       }
     });
   });
 
   // Disegno Esagoni (Risorse)
-  const hexNodesHtml = plat.resources.map(res => {
+  const hexNodesHtml = plat.resources.map((res, rIdx) => {
     const p = resPos[res];
+    if (!p) return '';
     const lines = wrapLabel(res, 14);
     const isOrphan = stats.unproduced.includes(res);
-    const dimmed = !isNodeConnected('res', res) ? 'dimmed' : '';
+    const dimmed = !isNodeConnected('res', rIdx) ? 'dimmed' : '';
+    const isDragging = draggingNode && draggingNode.type === 'res' && draggingNode.idx === rIdx ? 'dragging' : '';
     const textSvg = lines.length === 1
       ? `<text x="${p.x}" y="${p.y + 4}" class="plat-lbl">${esc(lines[0])}</text>`
       : `<text x="${p.x}" y="${p.y - 2}" class="plat-lbl">${esc(lines[0])}</text><text x="${p.x}" y="${p.y + 11}" class="plat-lbl">${esc(lines[1])}</text>`;
     return `
-      <g class="plat-node ${dimmed}" onmouseenter="hoverPlat('res','${esc(res).replaceAll("'","\\'")}') " onmouseleave="hoverPlat(null,null)">
+      <g class="plat-node ${dimmed} ${isDragging}" onpointerdown="startDrag(event,'res',${rIdx})" onmouseenter="hoverPlat('res',${rIdx})" onmouseleave="hoverPlat(null,null)">
         <polygon points="${getHexPoints(p.x, p.y, 36)}" class="plat-hex ${isOrphan?'orphan':''}"/>
         ${textSvg}
       </g>
@@ -1565,17 +1763,19 @@ function renderPlatformSVG() {
   }).join('');
 
   // Disegno Cerchi (Stakeholder)
-  const circleNodesHtml = plat.actors.map((act, idx) => {
-    const p = actPos[idx];
+  const circleNodesHtml = plat.actors.map((act, aIdx) => {
+    const p = actPos[aIdx];
+    if (!p) return '';
     const lines = wrapLabel(act.name, 15);
     const isProsumer = act.produces.length > 0 && act.consumes.length > 0;
     const roleTxt = isProsumer ? 'PROSUMER' : (act.produces.length > 0 ? 'PRODUTTORE' : 'FRUITORE');
-    const dimmed = !isNodeConnected('actor', idx) ? 'dimmed' : '';
+    const dimmed = !isNodeConnected('actor', aIdx) ? 'dimmed' : '';
+    const isDragging = draggingNode && draggingNode.type === 'actor' && draggingNode.idx === aIdx ? 'dragging' : '';
     const textSvg = lines.length === 1
       ? `<text x="${p.x}" y="${p.y + 2}" class="plat-lbl plat-actor-lbl">${esc(lines[0])}</text>`
       : `<text x="${p.x}" y="${p.y - 4}" class="plat-lbl plat-actor-lbl">${esc(lines[0])}</text><text x="${p.x}" y="${p.y + 9}" class="plat-lbl plat-actor-lbl">${esc(lines[1])}</text>`;
     return `
-      <g class="plat-node ${dimmed}" onmouseenter="hoverPlat('actor',${idx})" onmouseleave="hoverPlat(null,null)">
+      <g class="plat-node ${dimmed} ${isDragging}" onpointerdown="startDrag(event,'actor',${aIdx})" onmouseenter="hoverPlat('actor',${aIdx})" onmouseleave="hoverPlat(null,null)">
         <circle cx="${p.x}" cy="${p.y}" r="43" class="plat-circle ${isProsumer?'prosumer':''}"/>
         ${textSvg}
         <text x="${p.x}" y="${p.y + 23}" class="plat-sub">${roleTxt}</text>
@@ -1584,7 +1784,7 @@ function renderPlatformSVG() {
   }).join('');
 
   return `
-    <svg class="platform-svg" viewBox="0 0 ${W} ${H}">
+    <svg class="platform-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
       <defs>
         <marker id="arrProd" orient="auto" markerWidth="7" markerHeight="7" refX="6" refY="3.5">
           <path d="M0,0 L7,3.5 L0,7 Z" fill="#b90d49"/>
@@ -1606,7 +1806,7 @@ function renderPlatformSVG() {
 function renderPlatformInspector() {
   const plat = DATA[current].platform;
   if (!hoveredPlatNode) {
-    return `<span style="color:var(--muted);">💡 Passa il cursore su un <b>cerchio</b> (stakeholder) o su un <b>esagono</b> (risorsa) per isolare i rispettivi flussi di produzione e consumo.</span>`;
+    return `<span style="color:var(--muted);">💡 <b>Trascina</b> i cerchi e gli esagoni per disporre i nodi; passa il cursore su un nodo per isolare i flussi.</span>`;
   }
   if (hoveredPlatNode.type === 'actor') {
     const a = plat.actors[hoveredPlatNode.id];
@@ -1619,7 +1819,8 @@ function renderPlatformInspector() {
       </div>
     `;
   }
-  const res = hoveredPlatNode.id;
+  const res = plat.resources[hoveredPlatNode.id];
+  if (!res) return '';
   const producers = plat.actors.filter(a => a.produces.includes(res)).map(a => a.name);
   const consumers = plat.actors.filter(a => a.consumes.includes(res)).map(a => a.name);
   return `
@@ -1632,6 +1833,7 @@ function renderPlatformInspector() {
 }
 
 window.hoverPlat = function(type, id) {
+  if (draggingNode) return;
   hoveredPlatNode = type ? { type, id } : null;
   const svgWrap = document.getElementById('platform-svg-wrap');
   const insp = document.getElementById('platform-inspector');
@@ -1655,10 +1857,14 @@ window.addPlatformResource = function() {
 window.removePlatformResource = function(res) {
   const plat = DATA[current].platform;
   plat.resources = plat.resources.filter(r => r !== res);
+  if (plat.positions && plat.positions.resources) {
+    delete plat.positions.resources[res];
+  }
   plat.actors.forEach(a => {
     a.produces = a.produces.filter(r => r !== res);
     a.consumes = a.consumes.filter(r => r !== res);
   });
+  hoveredPlatNode = null;
   render();
 };
 
@@ -1675,12 +1881,23 @@ window.addPlatformActor = function() {
 window.removePlatformActor = function(idx) {
   const plat = DATA[current].platform;
   if (plat.actors.length <= 1) return;
+  const removed = plat.actors[idx];
+  if (removed && plat.positions && plat.positions.actors) {
+    delete plat.positions.actors[removed.name];
+  }
   plat.actors.splice(idx, 1);
+  hoveredPlatNode = null;
   render();
 };
 
 window.renamePlatformActor = function(idx, val) {
-  DATA[current].platform.actors[idx].name = val;
+  const plat = DATA[current].platform;
+  const oldName = plat.actors[idx].name;
+  if (plat.positions && plat.positions.actors && plat.positions.actors[oldName]) {
+    plat.positions.actors[val] = plat.positions.actors[oldName];
+    delete plat.positions.actors[oldName];
+  }
+  plat.actors[idx].name = val;
   const svgWrap = document.getElementById('platform-svg-wrap');
   if (svgWrap) svgWrap.innerHTML = renderPlatformSVG();
 };
@@ -1693,126 +1910,120 @@ window.toggleActorResource = function(actorIdx, direction, res) {
   render();
 };
 
-window.quickAddActorResource = function(actorIdx, direction, inputId) {
-  const inp = document.getElementById(inputId);
-  if (!inp) return;
-  const val = inp.value.trim();
-  if (!val) return;
-  const plat = DATA[current].platform;
-  if (!plat.resources.includes(val)) plat.resources.push(val);
-  if (!plat.actors[actorIdx][direction].includes(val)) plat.actors[actorIdx][direction].push(val);
-  render();
-};
-
 function tabPlatform(d) {
   const plat = d.platform;
   const stats = analyzePlatform(plat);
 
   const imbalanceNotice = stats.unproduced.length > 0
-    ? `<div class="note" style="margin:12px 0"><b>⚠️ Risorse richieste ma non ancora prodotte:</b> ${stats.unproduced.map(esc).join(', ')}. Assegna un attore produttore per chiudere il ciclo di piattaforma.</div>`
+    ? `<div class="note" style="margin:0 0 10px 0; padding:10px 14px; font-size:12px;"><b>⚠️ Risorse richieste ma non prodotte:</b> ${stats.unproduced.map(esc).join(', ')}.</div>`
     : stats.unconsumed.length > 0
-    ? `<div class="note" style="margin:12px 0"><b>ℹ️ Risorse immesse ma non ancora utilizzate:</b> ${stats.unconsumed.map(esc).join(', ')}.</div>`
+    ? `<div class="note" style="margin:0 0 10px 0; padding:10px 14px; font-size:12px;"><b>ℹ️ Risorse immesse ma non utilizzate:</b> ${stats.unconsumed.map(esc).join(', ')}.</div>`
     : '';
 
   return `
-    <span class="section-label">ECOSISTEMA DI PIATTAFORMA · SCAMBIO DI VALORE</span>
-    <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:12px;">
       <div>
+        <span class="section-label">ECOSISTEMA DI PIATTAFORMA · SCAMBIO DI VALORE</span>
         <h2 style="margin:0;">Attori, Prosumer e Flussi di Risorse</h2>
-        <p style="margin:4px 0 0;max-width:740px;">Modella l'intervento come ecosistema: ogni <b>stakeholder (cerchio)</b> può produrre e/o consumare <b>risorse (esagoni)</b> come dati, conoscenza, soldi, spazi, tempo o tecnologie.</p>
+        <p style="margin:4px 0 0;font-size:13.5px;">Configura risorse (esagoni) e stakeholder (cerchi) nel pannello scorrevole a sinistra; trascina i nodi nel grafico a destra.</p>
       </div>
+      <button class="btn secondary small" onclick="resetPlatformLayout()">↺ Reimposta disposizione nodi</button>
     </div>
 
-    <div class="platform-kpis">
-      <div class="platform-kpi"><small>Stakeholder (Cerchi)</small><b>${plat.actors.length}</b><span>di cui <b>${stats.prosumers}</b> prosumer</span></div>
-      <div class="platform-kpi"><small>Risorse (Esagoni)</small><b>${plat.resources.length}</b><span>Unità di valore definite</span></div>
-      <div class="platform-kpi"><small>Flussi Produzione</small><b>${stats.prodCount}</b><span>Cerchio → Esagono</span></div>
-      <div class="platform-kpi"><small>Flussi Consumo</small><b>${stats.consCount}</b><span>Esagono → Cerchio</span></div>
-    </div>
-
-    ${imbalanceNotice}
-
-    <div class="platform-stage">
-      <div class="platform-inspector" id="platform-inspector">${renderPlatformInspector()}</div>
-      <div id="platform-svg-wrap">${renderPlatformSVG()}</div>
-      <div class="budget-legend" style="justify-content:center;margin-top:8px;">
-        <span><i style="background:#fdebf1;border:2px solid #b90d49;border-radius:50%"></i>Cerchio = Stakeholder / Prosumer</span>
-        <span><i style="background:#fff3dc;border:2px solid #f0a527"></i>Esagono = Risorsa scambiata</span>
-        <span><i style="background:#b90d49"></i>Flusso continuo = Produzione (Attore → Risorsa)</span>
-        <span><i style="background:#f0a527"></i>Flusso tratteggiato = Consumo (Risorsa → Attore)</span>
-      </div>
-    </div>
-
-    <div class="platform-builder">
-      <!-- Colonna 1: Risorse libere (Esagoni) -->
-      <div class="inner">
-        <h3 style="color:#8a5308;">⬡ Risorse della piattaforma (Esagoni)</h3>
-        <p style="font-size:12.5px;margin-bottom:12px;">Definisci liberamente qualsiasi risorsa materiale o immateriale scambiata nella rete (dati, conoscenza, soldi, spazi, tempo, tecnologie...).</p>
-        <div style="display:flex;gap:8px;">
-          <input id="new-res-input" type="text" class="edit-input" placeholder="Es. Conoscenza, Soldi, Tecnologie..." onkeydown="if(event.key==='Enter')addPlatformResource()">
-          <button class="btn small" onclick="addPlatformResource()">+ Aggiungi</button>
-        </div>
-        <div class="res-pill-list">
-          ${plat.resources.map(res => `
-            <span class="res-pill">
-              ⬡ ${esc(res)}
-              <button onclick="removePlatformResource('${esc(res).replaceAll("'","\\'")}') " title="Elimina risorsa">×</button>
-            </span>
-          `).join('')}
-        </div>
-      </div>
-
-      <!-- Colonna 2: Stakeholder / Prosumer (Cerchi) -->
-      <div class="inner" style="background:#fff;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
-          <h3 style="color:var(--brand);margin:0;">● Attori e Stakeholder (Cerchi)</h3>
-          <button class="btn small" onclick="addPlatformActor()">+ Aggiungi stakeholder</button>
-        </div>
-
-        ${plat.actors.map((act, idx) => {
-          const isProsumer = act.produces.length > 0 && act.consumes.length > 0;
-          const badgeClass = isProsumer ? 'role-prosumer' : (act.produces.length > 0 ? 'role-producer' : 'role-consumer');
-          const badgeLabel = isProsumer ? 'Prosumer' : (act.produces.length > 0 ? 'Produttore' : 'Fruitore');
-          return `
-            <div class="actor-card">
-              <div class="actor-card-head">
-                <input type="text" class="edit-input" style="font-weight:800;font-size:14px;max-width:62%;" value="${esc(act.name)}" oninput="renamePlatformActor(${idx}, this.value)">
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span class="role-badge ${badgeClass}">${badgeLabel}</span>
-                  <button class="btn secondary small" style="padding:4px 8px;" onclick="removePlatformActor(${idx})" title="Rimuovi attore">×</button>
-                </div>
-              </div>
-
-              <div style="margin-bottom:10px;">
-                <div style="font-size:11px;font-weight:800;color:#850032;text-transform:uppercase;letter-spacing:.05em;">Produce / Immette (Cerchio → Esagono):</div>
-                <div class="toggle-chips">
-                  ${plat.resources.map(res => {
-                    const active = act.produces.includes(res);
-                    return `<button class="t-chip ${active?'on-prod':''}" onclick="toggleActorResource(${idx},'produces','${esc(res).replaceAll("'","\\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
-                  }).join('')}
-                </div>
-              </div>
-
-              <div>
-                <div style="font-size:11px;font-weight:800;color:#9e5b08;text-transform:uppercase;letter-spacing:.05em;">Consuma / Preleva (Esagono → Cerchio):</div>
-                <div class="toggle-chips">
-                  ${plat.resources.map(res => {
-                    const active = act.consumes.includes(res);
-                    return `<button class="t-chip ${active?'on-cons':''}" onclick="toggleActorResource(${idx},'consumes','${esc(res).replaceAll("'","\\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
-                  }).join('')}
-                </div>
-              </div>
+    <div class="platform-layout">
+      <!-- COLONNA SINISTRA: FISARMONICA SCORREVOLE -->
+      <div class="platform-sidebar">
+        <details class="plat-accordion" open>
+          <summary>⬡ Risorse della piattaforma (${plat.resources.length})</summary>
+          <div class="accordion-body">
+            <p style="font-size:12px;margin-bottom:10px;">Aggiungi o rimuovi liberamente unità di valore (dati, conoscenza, soldi, spazi, tempo, tecnologie...).</p>
+            <div style="display:flex;gap:6px;">
+              <input id="new-res-input" type="text" class="edit-input" style="font-size:12.5px;padding:6px 9px;" placeholder="Es. Conoscenza, Soldi..." onkeydown="if(event.key==='Enter')addPlatformResource()">
+              <button class="btn small" onclick="addPlatformResource()">+ Aggiungi</button>
             </div>
-          `;
-        }).join('')}
+            <div class="res-pill-list">
+              ${plat.resources.map(res => `
+                <span class="res-pill">
+                  ⬡ ${esc(res)}
+                  <button onclick="removePlatformResource('${esc(res).replaceAll("'","\'")}')" title="Elimina risorsa">×</button>
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        </details>
+
+        <details class="plat-accordion" open>
+          <summary>● Stakeholder e Prosumer (${plat.actors.length})</summary>
+          <div class="accordion-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span style="font-size:12px;color:var(--muted);">Definisci produzione e consumo:</span>
+              <button class="btn small" onclick="addPlatformActor()">+ Nuovo attore</button>
+            </div>
+
+            ${plat.actors.map((act, idx) => {
+              const isProsumer = act.produces.length > 0 && act.consumes.length > 0;
+              const badgeClass = isProsumer ? 'role-prosumer' : (act.produces.length > 0 ? 'role-producer' : 'role-consumer');
+              const badgeLabel = isProsumer ? 'Prosumer' : (act.produces.length > 0 ? 'Produttore' : 'Fruitore');
+              return `
+                <div class="actor-card">
+                  <div class="actor-card-head">
+                    <input type="text" class="edit-input" style="font-weight:800;font-size:13px;padding:5px 8px;max-width:64%;" value="${esc(act.name)}" oninput="renamePlatformActor(${idx}, this.value)">
+                    <div style="display:flex;align-items:center;gap:5px;">
+                      <span class="role-badge ${badgeClass}">${badgeLabel}</span>
+                      <button class="btn secondary small" style="padding:3px 7px;" onclick="removePlatformActor(${idx})" title="Rimuovi attore">×</button>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom:8px;">
+                    <div style="font-size:10px;font-weight:800;color:#850032;text-transform:uppercase;letter-spacing:.05em;">Produce (Cerchio → Esagono):</div>
+                    <div class="toggle-chips">
+                      ${plat.resources.map(res => {
+                        const active = act.produces.includes(res);
+                        return `<button class="t-chip ${active?'on-prod':''}" onclick="toggleActorResource(${idx},'produces','${esc(res).replaceAll("'","\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
+                      }).join('')}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style="font-size:10px;font-weight:800;color:#9e5b08;text-transform:uppercase;letter-spacing:.05em;">Consuma (Esagono → Cerchio):</div>
+                    <div class="toggle-chips">
+                      ${plat.resources.map(res => {
+                        const active = act.consumes.includes(res);
+                        return `<button class="t-chip ${active?'on-cons':''}" onclick="toggleActorResource(${idx},'consumes','${esc(res).replaceAll("'","\'")}')">${active?'✓ ':'+ '}${esc(res)}</button>`;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </details>
+      </div>
+
+      <!-- COLONNA DESTRA: GRAFICO SEMPRE VISIBILE -->
+      <div class="platform-main">
+        <div class="platform-kpis">
+          <div class="platform-kpi"><small>Stakeholder</small><b>${plat.actors.length}</b><span><b>${stats.prosumers}</b> prosumer</span></div>
+          <div class="platform-kpi"><small>Risorse</small><b>${plat.resources.length}</b><span>Esagoni attivi</span></div>
+          <div class="platform-kpi"><small>Produzione</small><b>${stats.prodCount}</b><span>Cerchio → Esagono</span></div>
+          <div class="platform-kpi"><small>Consumo</small><b>${stats.consCount}</b><span>Esagono → Cerchio</span></div>
+        </div>
+        ${imbalanceNotice}
+        <div class="platform-stage">
+          <div class="platform-inspector" id="platform-inspector">${renderPlatformInspector()}</div>
+          <div id="platform-svg-wrap">${renderPlatformSVG()}</div>
+          <div class="budget-legend" style="justify-content:center;margin-top:8px;font-size:11px;">
+            <span><i style="background:#fdebf1;border:2px solid #b90d49;border-radius:50%"></i>Cerchio = Stakeholder</span>
+            <span><i style="background:#fff3dc;border:2px solid #f0a527"></i>Esagono = Risorsa</span>
+            <span><i style="background:#b90d49"></i>Produzione</span>
+            <span><i style="background:#f0a527"></i>Consumo</span>
+          </div>
+        </div>
       </div>
     </div>
   `;
 }
 
-// ============================================================================
-// SCHEDA 5: CAMPAGNA E CO-DESIGN
-// ============================================================================
 function tabCampaign(d) {
   const c = d.campaign;
   return `
